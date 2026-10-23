@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panchayat Employee Portal – Road Works & Community Administration</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+  <style>
+    .villager-link-btn {
+      background: none;
+      border: none;
+      padding: 0;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      text-decoration: underline;
+      text-align: left;
+    }
+    .villager-link-btn:hover {
+      color: var(--accent-gold);
+    }
+    .verification-thumbnail {
+      width: 68px;
+      height: 58px;
+      object-fit: cover;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color);
+      cursor: zoom-in;
+    }
+    .square-checkbox {
+      width: 22px;
+      height: 22px;
+      min-width: 22px;
+      min-height: 22px;
+      accent-color: #15803d;
+      cursor: pointer;
+      border-radius: 4px;
+      vertical-align: middle;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .square-checkbox:hover:not(:disabled) {
+      transform: scale(1.1);
+      box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.2);
+    }
+    .verification-checkbox {
+      width: 22px;
+      height: 22px;
+      min-width: 22px;
+      min-height: 22px;
+      accent-color: #15803d;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body style="background: #f4efe6;">
+
+  <!-- Navigation Bar -->
+  <nav class="navbar" style="border-bottom: 2px solid var(--accent-gold);">
+    <div class="nav-container">
+      <a href="/employee-dashboard.html" class="brand">
+        <div class="brand-icon">🏛️</div>
+        <div>
+          <div>Gram Panchayat Portal</div>
+          <span class="brand-subtitle" id="nav-panchayat-name">Sundarapuram Gram Panchayat</span>
+        </div>
+      </a>
+      <div class="nav-actions">
+        <div style="text-align: right; margin-right: 0.5rem;">
+          <div style="font-size: 0.88rem; font-weight: 700; color: var(--primary-dark);" id="emp-name-badge">Panchayat Staff</div>
+          <div style="font-size: 0.75rem; color: var(--text-muted);" id="emp-code-badge">Authorized Staff Session</div>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="API.logout()">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="section" style="max-width: 1350px;">
+    <!-- Header Notice -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.75rem;">
+      <div>
+        <h1 style="font-size: 1.85rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 0.25rem;">
+          Community Road Works & Villager Reports Administration
+        </h1>
+        <p style="font-size: 0.92rem; color: var(--text-muted); margin: 0;">
+          Monitor all citizens' submitted road defect reports, track repair progress, and inspect reward statistics.
+        </p>
+      </div>
+
+      <div style="background: #ffffff; border: 1.5px solid var(--border-color); padding: 0.65rem 1rem; border-radius: var(--radius-md); font-size: 0.82rem; color: var(--text-muted);">
+        🔒 <strong>Policy:</strong> AI-approved photos require employee verification before exactly 20 points are awarded.
+      </div>
+    </div>
+
+    <!-- A. Community Overview Statistics Cards (Real Database Data) -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+      <div class="card" style="padding: 1rem; text-align: center; border-left: 4px solid var(--primary);">
+        <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Reporting Villagers</div>
+        <div style="font-size: 1.6rem; font-weight: 800; color: var(--primary-dark);" id="stat-reporting-villagers">0</div>
+        <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.15rem;">Citizens reporting</div>
+      </div>
+
+      <div class="card" style="padding: 1rem; text-align: center; border-left: 4px solid #2d6a4f;">
+        <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Total Road Reports</div>
+        <div style="font-size: 1.6rem; font-weight: 800; color: var(--primary-dark);" id="stat-total">0</div>
+        <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.15rem;">All submissions</div>
+      </div>
+
+      <div class="card" style="padding: 1rem; text-align: center; border-left: 4px solid var(--status-pending);">
+        <div style="font-size: 0.72rem; font-weight: 700; color: var(--status-pending); text-transform: uppercase;">Pending Repairs</div>
+        <div style="font-size: 1.6rem; font-weight: 800; color: var(--status-pending);" id="stat-pending">0</div>
+        <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.15rem;">Awaiting work</div>
+      </div>
+
+      <div class="card" style="padding: 1rem; text-align: center; border-left: 4px solid var(--status-inprogress);">
+        <div style="font-size: 0.72rem; font-weight: 700; color: var(--status-inprogress); text-transform: uppercase;">In Progress</div>
+        <div style="font-size: 1.6rem; font-weight: 800; color: var(--status-inprogress);" id="stat-inprogress">0</div>
+        <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.15rem;">Active repairs</div>
+      </div>
+
+      <div class="card" style="padding: 1rem; text-align: center; border-left: 4px solid #047857;">
+        <div style="font-size: 0.72rem; font-weight: 700; color: #047857; text-transform: uppercase;">Roads Resolved</div>
+        <div style="font-size: 1.6rem; font-weight: 800; color: #047857;" id="stat-resolved">0</div>
+        <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.15rem;">Repairs completed</div>
+      </div>
+
+      <div class="card" style="padding: 1rem; text-align: center; border-left: 4px solid var(--accent-gold);">
+        <div style="font-size: 0.72rem; font-weight: 700; color: var(--accent-gold); text-transform: uppercase;">Points Awarded</div>
+        <div style="font-size: 1.6rem; font-weight: 800; color: var(--accent-gold);" id="stat-points-awarded">0 pts</div>
+        <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.15rem;">To villagers</div>
+      </div>
+
+      <div class="card" style="padding: 1rem; text-align: center; border-left: 4px solid var(--status-accepted);">
+        <div style="font-size: 0.72rem; font-weight: 700; color: var(--status-accepted); text-transform: uppercase;">Eligible Reports</div>
+        <div style="font-size: 1.6rem; font-weight: 800; color: var(--status-accepted);" id="stat-eligible-reports">0</div>
+        <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.15rem;">Earned rewards</div>
+      </div>
+    </div>
+
+    <section class="card" style="margin-bottom: 1.75rem; padding: 1.25rem;">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">Pending Image Verification</h2>
+          <span style="font-size: 0.85rem; color: var(--text-muted);">
+            Verify AI-approved road-damage photos. Points are credited only after approval.
+          </span>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="loadPendingImageVerification()">
+          Refresh pending images
+        </button>
+      </div>
+      <div id="verification-message" role="status" aria-live="polite"
+           style="display:none; margin: 0.75rem 0; padding: 0.75rem; border-radius: var(--radius-sm);"></div>
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Report ID</th>
+              <th>Villager Name</th>
+              <th>Uploaded Photo</th>
+              <th>Description</th>
+              <th>Location / Coordinates</th>
+              <th>Submission Date &amp; Time</th>
+              <th>AI Verification Result</th>
+              <th>Employee Verification</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="pending-image-verification-body">
+            <tr><td colspan="9" style="text-align:center;padding:1.5rem;color:var(--text-muted);">Loading pending image verification...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- D. Filters & Search Toolbar -->
+    <div class="card" style="margin-bottom: 1.75rem; padding: 1.25rem;">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) auto; gap: 1rem; align-items: flex-end;">
+        <div>
+          <label class="form-label" style="font-size: 0.8rem;">Search Villager or Report ID</label>
+          <input type="text" id="search-keyword" class="form-input" placeholder="e.g. Ramesh, REP-2026..." onkeyup="handleSearch(event)">
+        </div>
+
+        <div>
+          <label class="form-label" style="font-size: 0.8rem;">Filter by Location / Road</label>
+          <input type="text" id="filter-location" class="form-input" placeholder="e.g. Market Road, Ward 4..." onkeyup="handleSearch(event)">
+        </div>
+
+        <div>
+          <label class="form-label" style="font-size: 0.8rem;">Filter by Repair Status</label>
+          <select id="filter-repair-status" class="form-select" onchange="loadReports()">
+            <option value="">All Repair Statuses</option>
+            <option value="PENDING">Pending Repair</option>
+            <option value="IN_PROGRESS">Repairs In Progress</option>
+            <option value="RESOLVED">Repairs Resolved</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="form-label" style="font-size: 0.8rem;">Filter by AI Verification</label>
+          <select id="filter-status" class="form-select" onchange="loadReports()">
+            <option value="">All Verification States</option>
+            <option value="PENDING_EMPLOYEE_VERIFICATION">PENDING EMPLOYEE VERIFICATION</option>
+            <option value="EMPLOYEE_APPROVED">EMPLOYEE APPROVED</option>
+            <option value="EMPLOYEE_REJECTED">EMPLOYEE REJECTED</option>
+            <option value="AI_REJECTED">AI REJECTED</option>
+            <option value="ACCEPTED">ACCEPTED (Valid Road Damage)</option>
+            <option value="REJECTED_BY_ADMIN">REJECTED BY ADMIN</option>
+            <option value="REJECTED_UNRELATED">REJECTED (Unrelated Photo)</option>
+            <option value="REJECTED_DUPLICATE">REJECTED (Duplicate Defect)</option>
+            <option value="NEEDS_REVIEW">NEEDS_REVIEW (Uncertain)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="form-label" style="font-size: 0.8rem;">Filter by Date</label>
+          <input type="date" id="filter-date" class="form-input" onchange="loadReports()">
+        </div>
+
+        <div>
+          <label class="form-label" style="font-size: 0.8rem;">Sort By</label>
+          <select id="sort-by" class="form-select" onchange="loadReports()">
+            <option value="recent">Most Recent First</option>
+            <option value="points">Points Earned (High to Low)</option>
+            <option value="villager_points">Villager Total Points</option>
+          </select>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem;">
+          <button type="button" class="btn btn-primary" onclick="loadReports()">
+            🔍 Filter
+          </button>
+          <button type="button" class="btn btn-secondary" onclick="resetFilters()">
+            Clear
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- B. All Villagers' Work Management Table (NO PHOTO DISPLAY) -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">All Villagers' Road Work Submissions</h2>
+          <span style="font-size: 0.85rem; color: var(--text-muted);">
+            Review work descriptions, report details, locations, verification results, and update repair statuses.
+          </span>
+        </div>
+        <span class="badge badge-points" id="table-count-badge">0 Reports Listed</span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Report ID</th>
+              <th>Villager</th>
+              <th>Road Problem / Description</th>
+              <th>Uploaded Image</th>
+              <th>Submission Date</th>
+              <th>AI Verification</th>
+              <th>Employee Verification</th>
+              <th>Points Awarded</th>
+              <th>Report Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="employee-reports-body">
+            <tr>
+              <td colspan="10" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">Loading community road reports...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <div id="verification-image-modal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-content" style="max-width: 900px;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="verification-image-title">Uploaded road-damage image</h3>
+        <button type="button" class="modal-close" onclick="closeVerificationImage()">&times;</button>
+      </div>
+      <img id="verification-image-full" alt="Full uploaded road-damage report"
+           style="display:block;max-width:100%;max-height:75vh;margin:0 auto;object-fit:contain;">
+    </div>
+  </div>
+
+  <div id="verification-approve-modal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-content" style="max-width: 580px;">
+      <div class="modal-header" style="border-bottom: 2px solid var(--accent-gold);">
+        <div>
+          <h3 class="modal-title" style="color: var(--primary-dark); font-size: 1.25rem;">✓ Approve Photo Submission</h3>
+          <span style="font-size: 0.8rem; color: var(--text-muted);">Panchayat Employee Verification &amp; Points Award</span>
+        </div>
+        <button type="button" class="modal-close" onclick="closeVerificationApproveModal()">&times;</button>
+      </div>
+
+      <div style="padding: 1rem 0;">
+        <input type="hidden" id="approve-modal-report-id">
+
+        <!-- Summary Details Box -->
+        <div style="background: #ffffff; border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.15rem;">
+          <div style="display: flex; gap: 1rem; align-items: flex-start;">
+            <img id="approve-modal-image-thumb" src="" alt="Thumbnail"
+                 style="width: 95px; height: 80px; object-fit: cover; border-radius: var(--radius-sm); border: 1.5px solid var(--border-color); cursor: zoom-in;"
+                 onclick="openImageFromApproveModal()" title="Click to view full photo">
+            <div style="flex: 1;">
+              <div style="font-weight: 800; font-size: 0.95rem; color: var(--text-main);" id="approve-modal-report-num">Report #</div>
+              <div style="font-size: 0.86rem; color: var(--primary); font-weight: 700; margin-top: 0.2rem;" id="approve-modal-villager-name">Villager: </div>
+              <div style="font-size: 0.78rem; color: var(--text-muted);" id="approve-modal-villager-email"></div>
+              <div style="font-size: 0.8rem; color: var(--text-main); margin-top: 0.35rem;" id="approve-modal-location"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Award Points Callout -->
+        <div style="background: #ecfdf5; border: 1.5px solid #10b981; border-radius: var(--radius-md); padding: 0.9rem 1.15rem; display: flex; align-items: center; gap: 0.85rem;">
+          <div style="font-size: 1.8rem; line-height: 1;">🪙</div>
+          <div>
+            <div style="font-weight: 800; font-size: 0.95rem; color: #065f46;">
+              Award +20 Points to Villager Wallet
+            </div>
+            <div style="font-size: 0.82rem; color: #047857; margin-top: 0.2rem; line-height: 1.35;">
+              Confirming this photo verification will mark the road defect as employee-verified and automatically credit <strong>20 points</strong> to the villager's account.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+        <button type="button" class="btn btn-secondary" onclick="closeVerificationApproveModal()">Cancel</button>
+        <button type="button" id="approve-modal-confirm-btn" class="btn btn-primary" onclick="confirmApproveSubmission()" style="background: #15803d; border-color: #15803d; font-weight: 700;">
+          ✓ Confirm &amp; Award +20 Points
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="verification-reject-modal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-content" style="max-width: 540px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Reject Image Verification</h3>
+        <button type="button" class="modal-close" onclick="closeVerificationReject()">&times;</button>
+      </div>
+      <form id="verification-reject-form">
+        <input type="hidden" id="verification-reject-report-id">
+        <label class="form-label" for="verification-reject-reason">Reason for Rejection</label>
+        <textarea id="verification-reject-reason" class="form-textarea" rows="4"
+                  maxlength="2000" required
+                  placeholder="Explain why this report cannot be verified."></textarea>
+        <div id="verification-reject-error" role="alert" style="display:none;color:#b91c1c;margin-top:.5rem;"></div>
+        <div style="display:flex;justify-content:flex-end;gap:.75rem;margin-top:1rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeVerificationReject()">Cancel</button>
+          <button type="submit" id="verification-reject-submit" class="btn btn-primary">Reject report</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- E. Update Repair Status Modal -->
+  <div id="repair-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 540px;">
+      <div class="modal-header">
+        <div>
+          <h3 class="modal-title">Update Road Repair Status</h3>
+          <span id="repair-modal-report-id" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">REP-2026-1001</span>
+        </div>
+        <button type="button" class="modal-close" onclick="closeRepairModal()">&times;</button>
+      </div>
+
+      <div style="background: var(--bg-cream); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.25rem;">
+        <div style="font-size: 0.88rem; font-weight: 700; color: var(--primary-dark);" id="repair-modal-road">Market Road, Ward 4</div>
+        <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;" id="repair-modal-desc">Deep pothole cavity near school</div>
+        <div style="font-size: 0.78rem; color: var(--primary); font-family: monospace; margin-top: 0.25rem;" id="repair-modal-coords">📍 Lat: 10.1234, Lon: 76.4321</div>
+      </div>
+
+      <form id="repair-update-form">
+        <input type="hidden" id="current-report-id">
+
+        <div class="form-group">
+          <label class="form-label" for="new-repair-status">Select New Repair Status</label>
+          <select id="new-repair-status" class="form-select" required>
+            <option value="PENDING">Pending Repair (Report logged, inspection pending)</option>
+            <option value="IN_PROGRESS">Repairs In Progress (Maintenance team dispatched on-site)</option>
+            <option value="RESOLVED">Repairs Resolved (Asphalt patched and inspected)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="repair-notes">Field Officer Progress Notes / Remarks</label>
+          <textarea id="repair-notes" class="form-textarea" rows="3" placeholder="e.g. Cold mix asphalt dispatched, road patched and roller compacted..." required></textarea>
+          <div class="form-help">This note is recorded in the permanent audit trail and is visible to the reporting villager.</div>
+        </div>
+
+        <button type="submit" id="save-repair-btn" class="btn btn-primary btn-lg" style="width: 100%;">
+          Save Repair Progress Update
+        </button>
+      </form>
+
+      <!-- Audit History List -->
+      <div style="margin-top: 1.5rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+        <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--primary-dark);">Audit Trail for this Road</h4>
+        <div id="repair-audit-list" style="font-size: 0.85rem; max-height: 160px; overflow-y: auto;">
+          Loading audit trail...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- C. Villager Statistics & Rewards Summary Modal -->
+  <div id="villager-summary-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 780px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.65rem;">
+          <span style="font-size: 1.8rem;">🧑‍🌾</span>
+          <div>
+            <h3 class="modal-title" id="vsum-name">Villager Rewards & Progress Summary</h3>
+            <span style="font-size: 0.82rem; color: var(--text-muted);" id="vsum-email">citizen@email.com</span>
+          </div>
+        </div>
+        <button type="button" class="modal-close" onclick="closeVillagerSummaryModal()">&times;</button>
+      </div>
+
+      <!-- Quick Metrics Grid for this Villager -->
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-bottom: 1.5rem;">
+        <div class="card" style="padding: 0.85rem; text-align: center;">
+          <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Submitted</div>
+          <div style="font-size: 1.4rem; font-weight: 800; color: var(--primary-dark);" id="vsum-submitted">0</div>
+        </div>
+        <div class="card" style="padding: 0.85rem; text-align: center; border-left: 3px solid var(--status-accepted);">
+          <div style="font-size: 0.72rem; font-weight: 700; color: var(--status-accepted); text-transform: uppercase;">Eligible & Verified</div>
+          <div style="font-size: 1.4rem; font-weight: 800; color: var(--status-accepted);" id="vsum-accepted">0</div>
+        </div>
+        <div class="card" style="padding: 0.85rem; text-align: center; border-left: 3px solid var(--accent-gold);">
+          <div style="font-size: 0.72rem; font-weight: 700; color: var(--accent-gold); text-transform: uppercase;">Total Points Earned</div>
+          <div style="font-size: 1.4rem; font-weight: 800; color: var(--accent-gold);" id="vsum-points-earned">0 pts</div>
+        </div>
+        <div class="card" style="padding: 0.85rem; text-align: center; border-left: 3px solid #047857;">
+          <div style="font-size: 0.72rem; font-weight: 700; color: #047857; text-transform: uppercase;">Current Balance</div>
+          <div style="font-size: 1.4rem; font-weight: 800; color: #047857;" id="vsum-points-balance">0 pts</div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; font-size: 0.8rem; color: var(--text-muted);">
+        <span>Repair status breakdown:</span>
+        <span class="badge badge-pending" id="vsum-pending">0 Pending</span>
+        <span class="badge badge-inprogress" id="vsum-inprogress">0 In Progress</span>
+        <span class="badge badge-resolved" id="vsum-resolved">0 Resolved</span>
+      </div>
+
+      <!-- Individual Reports History Table -->
+      <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.6rem; color: var(--primary-dark);">Individual Report History & Points Log</h4>
+      <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
+        <table class="data-table" style="font-size: 0.84rem;">
+          <thead>
+            <tr>
+              <th>Report #</th>
+              <th>Road & Location</th>
+              <th>Description</th>
+              <th>AI Status</th>
+              <th>Repair Status</th>
+              <th>Points Awarded</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="vsum-reports-table">
+            <tr>
+              <td colspan="7" style="text-align: center; padding: 1.5rem; color: var(--text-muted);">Loading villager reports...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top: 1rem; font-size: 0.78rem; color: var(--text-muted); background: var(--bg-cream); padding: 0.65rem 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+        🔒 <strong>Employee Verification:</strong> Citizens receive exactly +20 points only after an authorized employee approves an AI-passed report.
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    // Protect Employee Page
+    const user = API.getUser();
+    if (!user || user.role !== 'PANCHAYAT_EMPLOYEE') {
+      window.location.href = '/employee-login.html';
+    }
+
+    document.addEventListener('click', event => {
+      const viewButton = event.target.closest('button[data-view-image-id]');
+      if (viewButton) {
+        const reportId = Number(viewButton.dataset.viewImageId);
+        const reportNumber = viewButton.dataset.reportNumber || `#${reportId}`;
+        const imageUrl = verificationImageUrls.get(reportId);
+        if (imageUrl) {
+          openVerificationImage(imageUrl, reportNumber);
+        } else {
+          API.getReportImage(reportId).then(url => {
+            verificationImageUrls.set(reportId, url);
+            openVerificationImage(url, reportNumber);
+          }).catch(err => {
+            showToast('Unable to load photo: ' + err.message, 'error');
+          });
+        }
+        return;
+      }
+      const imgThumb = event.target.closest('img.verification-thumbnail[data-report-id]');
+      if (imgThumb && imgThumb.src) {
+        openVerificationImage(imgThumb.src, imgThumb.dataset.reportNumber || 'Report Photo');
+        return;
+      }
+      const rejectButton = event.target.closest('button[data-reject-report-id]');
+      if (rejectButton) openVerificationReject(Number(rejectButton.dataset.rejectReportId));
+    });
+
+    document.addEventListener('change', event => {
+      if (event.target.matches('input[type="checkbox"][data-report-id]')) {
+        const checkbox = event.target;
+        if (checkbox.checked) {
+          openVerificationApproveModal(Number(checkbox.dataset.reportId), checkbox);
+        }
+      }
+    });
+
+    document.getElementById('emp-name-badge').textContent = user.fullName || 'Panchayat Staff';
+    document.getElementById('emp-code-badge').textContent = `${user.employeeCode || 'EMP'} • ${user.designation || 'Officer'}`;
+    if (user.panchayatName) {
+      document.getElementById('nav-panchayat-name').textContent = user.panchayatName;
+    }
+
+    // Load Community Overview Statistics from MySQL
+    async function loadStats() {
+      try {
+        const resp = await API.getEmployeeStats();
+        if (resp.success && resp.data) {
+          const s = resp.data;
+          document.getElementById('stat-reporting-villagers').textContent = s.totalVillagersReporting != null ? s.totalVillagersReporting : '-';
+          document.getElementById('stat-total').textContent = s.totalReports != null ? s.totalReports : 0;
+          document.getElementById('stat-pending').textContent = s.pendingRepairs != null ? s.pendingRepairs : 0;
+          document.getElementById('stat-inprogress').textContent = s.inProgressRepairs != null ? s.inProgressRepairs : 0;
+          document.getElementById('stat-resolved').textContent = s.resolvedRoads != null ? s.resolvedRoads : 0;
+          document.getElementById('stat-points-awarded').textContent = `${s.totalPointsAwarded != null ? s.totalPointsAwarded : 0} pts`;
+          document.getElementById('stat-eligible-reports').textContent = s.eligibleReports != null ? s.eligibleReports : (s.acceptedReports || 0);
+        }
+      } catch (err) {
+        console.warn('Failed to load employee stats:', err);
+      }
+    }
+
+    // Load & Filter All Villagers' Reports
+    let cachedReports = [];
+    const verificationImageUrls = new Map();
+    const pendingReportsMap = new Map();
+    let currentApproveTarget = null;
+
+    function clearVerificationImageUrls() {
+      verificationImageUrls.forEach(url => URL.revokeObjectURL(url));
+      verificationImageUrls.clear();
+    }
+
+    async function loadReports() {
+      const status = document.getElementById('filter-status').value;
+      const repairStatus = document.getElementById('filter-repair-status').value;
+      const dateFilter = document.getElementById('filter-date').value;
+      const locationFilter = document.getElementById('filter-location').value.trim().toLowerCase();
+      const keyword = document.getElementById('search-keyword').value.trim().toLowerCase();
+      const sortBy = document.getElementById('sort-by').value;
+
+      const params = {};
+      if (status) params.status = status;
+      if (repairStatus) params.repairStatus = repairStatus;
+      if (keyword) params.keyword = keyword;
+
+      try {
+        const resp = await API.getEmployeeReports(params);
+        if (resp.success && resp.data) {
+          let list = resp.data;
+
+          // Client-side Location Filter
+          if (locationFilter) {
+            list = list.filter(r => 
+              (r.roadName && r.roadName.toLowerCase().includes(locationFilter)) ||
+              (r.villageArea && r.villageArea.toLowerCase().includes(locationFilter))
+            );
+          }
+
+          // Client-side Date Filter
+          if (dateFilter) {
+            list = list.filter(r => r.createdAt && r.createdAt.startsWith(dateFilter));
+          }
+
+          // Client-side Sorting
+          if (sortBy === 'points') {
+            list.sort((a, b) => (b.pointsAwarded || 0) - (a.pointsAwarded || 0));
+          } else if (sortBy === 'villager_points') {
+            list.sort((a, b) => ((b.villagerTotalPointsEarned || b.villagerPointsBalance || 0) - (a.villagerTotalPointsEarned || a.villagerPointsBalance || 0)));
+          } else {
+            // Most recent first
+            list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          }
+
+          cachedReports = list;
+          renderReports(list);
+        }
+      } catch (err) {
+        showToast('Error loading reports: ' + err.message, 'error');
+      }
+    }
+
+    async function loadPendingImageVerification() {
+      const tbody = document.getElementById('pending-image-verification-body');
+      const message = document.getElementById('verification-message');
+      clearVerificationImageUrls();
+      message.style.display = 'none';
+      tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:1.5rem;color:var(--text-muted);">Loading pending image verification...</td></tr>';
+
+      try {
+        const resp = await API.getPendingEmployeeVerificationReports();
+        if (!resp.success || !Array.isArray(resp.data)) {
+          throw new Error(resp.message || 'Could not load pending image-verification reports.');
+        }
+        if (resp.data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:1.5rem;color:var(--text-muted);">There are no AI-approved reports awaiting employee verification.</td></tr>';
+          return;
+        }
+
+        pendingReportsMap.clear();
+        resp.data.forEach(r => pendingReportsMap.set(Number(r.id), r));
+
+        tbody.innerHTML = resp.data.map(report => {
+          const location = `${escapeHtml(report.roadName || '')}, ${escapeHtml(report.villageArea || '')}`;
+          const coordinates = Number.isFinite(report.latitude) && Number.isFinite(report.longitude)
+            ? `${report.latitude.toFixed(5)}, ${report.longitude.toFixed(5)}`
+            : 'Coordinates unavailable';
+          const mapLink = Number.isFinite(report.latitude) && Number.isFinite(report.longitude)
+            ? `<a href="https://maps.google.com/?q=${report.latitude},${report.longitude}" target="_blank" rel="noopener noreferrer">${coordinates}</a>`
+            : coordinates;
+          const reportId = Number(report.id);
+
+          return `
+            <tr id="verification-row-${reportId}">
+              <td><strong>#${reportId}</strong><div style="font-size:.78rem;color:var(--text-muted);">${escapeHtml(report.reportNumber || '')}</div></td>
+              <td>${escapeHtml(report.villagerName || 'Villager')}<div style="font-size:.78rem;color:var(--text-muted);">${escapeHtml(report.villagerEmail || '')}</div></td>
+              <td>
+                <span id="verification-image-loading-${reportId}" role="status">Loading photo...</span>
+                <img class="verification-thumbnail" alt="Uploaded road damage for ${escapeHtml(report.reportNumber || 'report')}" data-report-id="${reportId}" data-report-number="${escapeHtml(report.reportNumber || 'Report')}" hidden>
+                <button type="button" class="btn btn-secondary btn-sm" data-view-image-id="${reportId}" data-report-number="${escapeHtml(report.reportNumber || 'Report')}" disabled>View Image</button>
+              </td>
+              <td>${escapeHtml(report.description || '-')}</td>
+              <td>${location}<div style="font-size:.78rem;">${mapLink}</div></td>
+              <td>${escapeHtml(formatDate(report.createdAt))}</td>
+              <td><span class="badge badge-accepted">✓ AI_PASSED</span><div style="font-size:.76rem;color:var(--text-muted);">${escapeHtml(report.aiCategory || 'ROAD_DAMAGE')}${report.aiConfidenceScore != null ? ` · ${(report.aiConfidenceScore * 100).toFixed(1)}%` : ''}</div></td>
+              <td>
+                <div style="display:flex;align-items:center;gap:.6rem;">
+                  <input class="verification-checkbox square-checkbox" type="checkbox" aria-label="Verify photo submission ${escapeHtml(report.reportNumber || reportId)}" data-report-id="${reportId}">
+                  <span id="verification-status-${reportId}"><span class="badge badge-pending">Pending</span></span>
+                </div>
+              </td>
+              <td><button type="button" class="btn btn-danger btn-sm" data-reject-report-id="${reportId}">Reject</button></td>
+            </tr>
+          `;
+        }).join('');
+        await Promise.all(resp.data.map(async report => {
+          const reportId = Number(report.id);
+          const image = tbody.querySelector(`img[data-report-id="${reportId}"]`);
+          const loading = document.getElementById(`verification-image-loading-${reportId}`);
+          const viewButton = tbody.querySelector(`button[data-view-image-id="${reportId}"]`);
+          try {
+            const imageUrl = await API.getReportImage(reportId);
+            verificationImageUrls.set(reportId, imageUrl);
+            image.src = imageUrl;
+            image.onerror = () => {
+              image.hidden = true;
+              viewButton.disabled = true;
+              loading.hidden = false;
+              loading.textContent = 'Photo could not be displayed.';
+              loading.style.color = '#b91c1c';
+              URL.revokeObjectURL(imageUrl);
+              verificationImageUrls.delete(reportId);
+            };
+            image.hidden = false;
+            loading.textContent = '';
+            loading.hidden = true;
+            viewButton.disabled = false;
+          } catch (error) {
+            loading.textContent = error.message || 'Photo could not be loaded.';
+            loading.style.color = '#b91c1c';
+          }
+        }));
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:1.5rem;color:#b91c1c;">Unable to load pending reports.</td></tr>';
+        message.textContent = err.message || 'Could not load pending image-verification reports.';
+        message.style.display = 'block';
+        message.style.background = '#fef2f2';
+        message.style.color = '#991b1b';
+      }
+    }
+
+    function openVerificationApproveModal(reportId, checkbox) {
+      const report = pendingReportsMap.get(reportId) || (cachedReports ? cachedReports.find(r => Number(r.id) === reportId) : null);
+      currentApproveTarget = { reportId, checkbox, report, confirmed: false };
+
+      document.getElementById('approve-modal-report-id').value = reportId;
+      document.getElementById('approve-modal-report-num').textContent = report ? `Report #${reportId} · ${report.reportNumber || ''}` : `Report #${reportId}`;
+      document.getElementById('approve-modal-villager-name').textContent = `Villager: ${report ? (report.villagerName || 'Citizen') : 'Villager'}`;
+      document.getElementById('approve-modal-villager-email').textContent = report && report.villagerEmail ? report.villagerEmail : '';
+      document.getElementById('approve-modal-location').textContent = report ? `📍 ${report.roadName || ''}, ${report.villageArea || ''}` : '';
+
+      const thumbImg = document.getElementById('approve-modal-image-thumb');
+      const imageUrl = verificationImageUrls.get(reportId);
+      if (imageUrl) {
+        thumbImg.src = imageUrl;
+        thumbImg.style.display = 'block';
+      } else {
+        thumbImg.style.display = 'none';
+      }
+
+      const confirmBtn = document.getElementById('approve-modal-confirm-btn');
+      confirmBtn.disabled = false;
+      confirmBtn.innerHTML = '✓ Confirm &amp; Award +20 Points';
+
+      document.getElementById('verification-approve-modal').classList.add('active');
+    }
+
+    function closeVerificationApproveModal() {
+      document.getElementById('verification-approve-modal').classList.remove('active');
+      if (currentApproveTarget && currentApproveTarget.checkbox && !currentApproveTarget.confirmed) {
+        currentApproveTarget.checkbox.checked = false;
+        currentApproveTarget.checkbox.disabled = false;
+      }
+      currentApproveTarget = null;
+    }
+
+    function openImageFromApproveModal() {
+      if (currentApproveTarget) {
+        const imageUrl = verificationImageUrls.get(currentApproveTarget.reportId);
+        if (imageUrl) {
+          const reportNum = currentApproveTarget.report ? currentApproveTarget.report.reportNumber : `#${currentApproveTarget.reportId}`;
+          openVerificationImage(imageUrl, reportNum);
+        }
+      }
+    }
+
+    async function confirmApproveSubmission() {
+      if (!currentApproveTarget) return;
+      const { reportId, checkbox, report } = currentApproveTarget;
+      const villagerName = report && report.villagerName ? report.villagerName : 'Villager';
+      const confirmBtn = document.getElementById('approve-modal-confirm-btn');
+
+      confirmBtn.disabled = true;
+      confirmBtn.innerHTML = 'Processing Verification &amp; Points...';
+
+      try {
+        const response = await API.verifySubmission(reportId, 'APPROVE');
+        if (!response.success) {
+          throw new Error(response.message || 'The submission could not be verified.');
+        }
+
+        currentApproveTarget.confirmed = true;
+        if (checkbox) {
+          checkbox.checked = true;
+          checkbox.disabled = true;
+        }
+
+        const st1 = document.getElementById(`verification-status-${reportId}`);
+        if (st1) st1.innerHTML = '<span class="badge badge-accepted">✓ Verified (+20 Points)</span>';
+        const st2 = document.getElementById(`main-status-${reportId}`);
+        if (st2) st2.innerHTML = '<span class="badge badge-accepted">✓ Verified (+20 Points)</span>';
+
+        const rejectBtn1 = document.querySelector(`#verification-row-${reportId} button[data-reject-report-id]`);
+        if (rejectBtn1) rejectBtn1.disabled = true;
+        const rejectBtn2 = document.querySelector(`#main-row-${reportId} button[data-reject-report-id]`);
+        if (rejectBtn2) rejectBtn2.disabled = true;
+
+        closeVerificationApproveModal();
+
+        // Exact toast requested: "Photo verified! 20 points credited to [Villager Name]"
+        showToast(response.message || `Photo verified! 20 points credited to ${villagerName}`, 'success');
+
+        loadStats();
+        loadReports();
+        loadPendingImageVerification();
+      } catch (err) {
+        if (checkbox) {
+          checkbox.checked = false;
+          checkbox.disabled = false;
+        }
+        confirmBtn.disabled = false;
+        confirmBtn.innerHTML = '✓ Confirm &amp; Award +20 Points';
+        showToast(`Verification failed: ${err.message}`, 'error');
+      }
+    }
+
+    function openVerificationImage(imageUrl, reportNumber) {
+      document.getElementById('verification-image-full').src = imageUrl;
+      document.getElementById('verification-image-title').textContent = `Uploaded image · ${reportNumber}`;
+      document.getElementById('verification-image-modal').classList.add('active');
+    }
+
+    function closeVerificationImage() {
+      document.getElementById('verification-image-modal').classList.remove('active');
+      document.getElementById('verification-image-full').removeAttribute('src');
+    }
+
+    function openVerificationReject(reportId) {
+      document.getElementById('verification-reject-report-id').value = reportId;
+      document.getElementById('verification-reject-reason').value = '';
+      document.getElementById('verification-reject-error').style.display = 'none';
+      document.getElementById('verification-reject-modal').classList.add('active');
+      document.getElementById('verification-reject-reason').focus();
+    }
+
+    function closeVerificationReject() {
+      document.getElementById('verification-reject-modal').classList.remove('active');
+    }
+
+    document.getElementById('verification-reject-form').addEventListener('submit', async event => {
+      event.preventDefault();
+      const reportId = document.getElementById('verification-reject-report-id').value;
+      const reasonInput = document.getElementById('verification-reject-reason');
+      const reason = reasonInput.value.trim();
+      const error = document.getElementById('verification-reject-error');
+      const submit = document.getElementById('verification-reject-submit');
+      if (!reason) {
+        error.textContent = 'A rejection reason is required.';
+        error.style.display = 'block';
+        reasonInput.focus();
+        return;
+      }
+
+      submit.disabled = true;
+      try {
+        const response = await API.rejectEmployeeReport(reportId, reason);
+        if (!response.success) {
+          throw new Error(response.message || 'The report could not be rejected.');
+        }
+        const status = document.getElementById(`verification-status-${reportId}`);
+        if (status) status.innerHTML = `<span class="badge badge-rejected">✕ Rejected</span>`;
+        const mainSt = document.getElementById(`main-status-${reportId}`);
+        if (mainSt) mainSt.innerHTML = `<span class="badge badge-rejected">✕ Rejected</span>`;
+        const row = document.getElementById(`verification-row-${reportId}`);
+        if (row) {
+          const checkbox = row.querySelector('input[type="checkbox"]');
+          checkbox.checked = false;
+          checkbox.disabled = true;
+          const button = row.querySelector('button');
+          button.disabled = true;
+        }
+        closeVerificationReject();
+        showToast('Report rejected. No points were awarded.', 'success');
+        loadStats();
+        loadReports();
+        loadPendingImageVerification();
+      } catch (err) {
+        error.textContent = err.message || 'The report could not be rejected.';
+        error.style.display = 'block';
+      } finally {
+        submit.disabled = false;
+      }
+    });
+
+    function resetFilters() {
+      document.getElementById('filter-status').value = '';
+      document.getElementById('filter-repair-status').value = '';
+      document.getElementById('filter-date').value = '';
+      document.getElementById('filter-location').value = '';
+      document.getElementById('search-keyword').value = '';
+      document.getElementById('sort-by').value = 'recent';
+      loadReports();
+    }
+
+    function handleSearch(e) {
+      if (e.key === 'Enter') {
+        loadReports();
+      }
+    }
+
+    // Render Table
+    function renderReports(reports) {
+      const tbody = document.getElementById('employee-reports-body');
+      document.getElementById('table-count-badge').textContent = `${reports.length} Reports Listed`;
+
+      if (reports.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">No villager reports match the current filter criteria.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = reports.map(r => {
+        const reportId = Number(r.id);
+
+        let aiBadge = '';
+        if (r.aiCategory === 'ROAD_DAMAGE' || r.status === 'PENDING_EMPLOYEE_VERIFICATION' || r.status === 'EMPLOYEE_APPROVED' || r.status === 'EMPLOYEE_REJECTED' || r.status === 'ACCEPTED') {
+          aiBadge = `<span class="badge badge-accepted">✓ AI_PASSED</span><div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.2rem;">${r.aiConfidenceScore != null ? (r.aiConfidenceScore * 100).toFixed(1) + '%' : 'Road Damage'}</div>`;
+        } else if (r.status === 'REJECTED_DUPLICATE') {
+          aiBadge = '<span class="badge badge-rejected">✕ DUPLICATE</span><div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.2rem;">Existing Defect</div>';
+        } else {
+          aiBadge = `<span class="badge badge-rejected">✕ AI_REJECTED</span><div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.2rem;">${escapeHtml(r.aiCategory || 'Unrelated')}</div>`;
+        }
+
+        let empVerificationHtml = '';
+        if (r.status === 'PENDING_EMPLOYEE_VERIFICATION') {
+          empVerificationHtml = `
+            <div style="display:flex;flex-direction:column;gap:0.35rem;" id="main-verif-box-${reportId}">
+              <label style="display:flex;align-items:center;gap:.5rem;cursor:pointer;font-weight:600;font-size:0.85rem;">
+                <input class="verification-checkbox square-checkbox" type="checkbox" aria-label="Verify report ${escapeHtml(r.reportNumber || reportId)}" data-report-id="${reportId}">
+                <span id="main-status-${reportId}"><span class="badge badge-pending">Pending</span></span>
+              </label>
+              <button type="button" class="btn btn-danger btn-sm" data-reject-report-id="${reportId}" style="font-size:0.72rem;padding:0.2rem 0.5rem;align-self:flex-start;">Reject</button>
+            </div>
+          `;
+        } else if (r.status === 'EMPLOYEE_APPROVED' || r.status === 'ACCEPTED') {
+          empVerificationHtml = `
+            <span class="badge badge-accepted">✓ Verified (+20 Points)</span>
+            ${r.verifiedByEmployeeName ? `<div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.2rem;">By: ${escapeHtml(r.verifiedByEmployeeName)}${r.verifiedByEmployeeCode ? ` (${escapeHtml(r.verifiedByEmployeeCode)})` : ''}</div>` : ''}
+            ${r.verifiedAt ? `<div style="font-size:0.72rem;color:var(--text-muted);">${formatDate(r.verifiedAt)}</div>` : ''}
+          `;
+        } else if (r.status === 'EMPLOYEE_REJECTED') {
+          empVerificationHtml = `
+            <span class="badge badge-rejected">✕ Rejected</span>
+            <div style="font-size:0.75rem;color:#b91c1c;margin-top:0.2rem;">${escapeHtml(r.rejectionReason || 'No reason provided')}</div>
+            ${r.verifiedByEmployeeName ? `<div style="font-size:0.72rem;color:var(--text-muted);">By: ${escapeHtml(r.verifiedByEmployeeName)}</div>` : ''}
+          `;
+        } else {
+          empVerificationHtml = '<span style="color:var(--text-muted);font-size:0.8rem;">N/A (AI Rejected)</span>';
+        }
+
+        let repairBadge = '';
+        if (r.repairStatus === 'RESOLVED') {
+          repairBadge = `<span class="badge badge-resolved">🚜 Resolved</span>`;
+        } else if (r.repairStatus === 'IN_PROGRESS') {
+          repairBadge = `<span class="badge badge-inprogress">🔧 In Progress</span>`;
+        } else {
+          repairBadge = `<span class="badge badge-pending">⏳ Pending</span>`;
+        }
+
+        const reportJson = JSON.stringify(r).replace(/'/g, "&#39;");
+        const villagerTotalEarned = r.villagerTotalPointsEarned != null ? r.villagerTotalPointsEarned : (r.villagerPointsBalance || 0);
+
+        return `
+          <tr id="main-row-${reportId}">
+            <td><strong>#${reportId}</strong><div style="font-size:0.75rem;color:var(--text-muted);">${escapeHtml(r.reportNumber)}</div></td>
+            <td>
+              <button type="button" class="villager-link-btn" onclick="openVillagerSummaryModal(${r.villagerId})" title="Click to view full villager profile & reward stats">
+                👤 ${escapeHtml(r.villagerName)}
+              </button>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">${escapeHtml(r.villagerEmail)}</div>
+              <div style="font-size: 0.75rem; color: var(--accent-gold); margin-top: 0.15rem; font-weight: 700;">🪙 ${villagerTotalEarned} pts balance</div>
+            </td>
+            <td>
+              <div style="max-width: 220px; font-size: 0.84rem; line-height: 1.4; color: var(--text-main);">
+                ${escapeHtml(r.description || 'Road defect')}
+              </div>
+              <strong style="font-size: 0.85rem; display: block; margin-top: 0.25rem;">${escapeHtml(r.roadName)}</strong>
+              <div style="font-size: 0.78rem; color: var(--text-muted);">${escapeHtml(r.villageArea)}</div>
+              <a href="https://maps.google.com/?q=${r.latitude},${r.longitude}" target="_blank" style="font-size: 0.75rem; font-family: monospace;">
+                📍 ${r.latitude.toFixed(4)}, ${r.longitude.toFixed(4)}
+              </a>
+            </td>
+            <td>
+              <span id="main-image-loading-${reportId}" role="status" style="font-size:0.75rem;color:var(--text-muted);">Loading photo...</span>
+              <img class="verification-thumbnail" alt="Uploaded road damage for ${escapeHtml(r.reportNumber)}" data-main-img-id="${reportId}" data-report-id="${reportId}" data-report-number="${escapeHtml(r.reportNumber)}" hidden>
+              <button type="button" class="btn btn-secondary btn-sm" data-view-image-id="${reportId}" data-report-number="${escapeHtml(r.reportNumber)}" disabled style="margin-top:0.25rem;font-size:0.75rem;padding:0.25rem 0.5rem;">View Image</button>
+            </td>
+            <td style="font-size: 0.82rem; color: var(--text-muted);">${formatDate(r.createdAt)}</td>
+            <td>
+              ${aiBadge}
+            </td>
+            <td>
+              ${empVerificationHtml}
+            </td>
+            <td>
+              ${r.pointsAwarded > 0 ? `<span class="badge badge-points">+${r.pointsAwarded} pts</span>` : `<span style="color: var(--text-muted); font-size: 0.84rem;">0 pts</span>`}
+            </td>
+            <td>${repairBadge}</td>
+            <td>
+              <div style="display: flex; flex-direction: column; gap: 0.35rem;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick='openRepairModal(${reportJson})' style="font-size: 0.78rem; padding: 0.35rem 0.65rem;">
+                  🛠️ Update Repair
+                </button>
+                <button type="button" class="btn btn-outline btn-sm" onclick="openVillagerSummaryModal(${r.villagerId})" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">
+                  👤 Summary
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      loadMainReportImages(reports);
+    }
+
+    async function loadMainReportImages(reports) {
+      await Promise.all(reports.map(async report => {
+        const reportId = Number(report.id);
+        const image = document.querySelector(`img[data-main-img-id="${reportId}"]`);
+        const loading = document.getElementById(`main-image-loading-${reportId}`);
+        const viewButton = document.querySelector(`button[data-view-image-id="${reportId}"]`);
+        if (!image) return;
+
+        try {
+          let imageUrl;
+          if (verificationImageUrls.has(reportId)) {
+            imageUrl = verificationImageUrls.get(reportId);
+          } else {
+            imageUrl = await API.getReportImage(reportId);
+            verificationImageUrls.set(reportId, imageUrl);
+          }
+          image.src = imageUrl;
+          image.onerror = () => {
+            image.hidden = true;
+            if (viewButton) viewButton.disabled = true;
+            if (loading) {
+              loading.hidden = false;
+              loading.textContent = 'Photo unavailable';
+              loading.style.color = '#b91c1c';
+            }
+          };
+          image.hidden = false;
+          if (loading) {
+            loading.textContent = '';
+            loading.hidden = true;
+          }
+          if (viewButton) viewButton.disabled = false;
+        } catch (error) {
+          if (loading) {
+            loading.textContent = error.message || 'Photo unavailable';
+            loading.style.color = '#b91c1c';
+          }
+        }
+      }));
+    }
+
+    // Open Repair Status Update Modal
+    function openRepairModal(report) {
+      document.getElementById('current-report-id').value = report.id;
+      document.getElementById('repair-modal-report-id').textContent = `${report.reportNumber} • Status: ${report.repairStatus}`;
+      document.getElementById('repair-modal-road').textContent = `${report.roadName}, ${report.villageArea}`;
+      document.getElementById('repair-modal-desc').textContent = report.description || 'Pothole damage defect';
+      document.getElementById('repair-modal-coords').textContent = `📍 Latitude: ${report.latitude.toFixed(5)}, Longitude: ${report.longitude.toFixed(5)}`;
+      document.getElementById('new-repair-status').value = report.repairStatus;
+      document.getElementById('repair-notes').value = '';
+
+      loadRepairHistory(report.id);
+      document.getElementById('repair-modal').classList.add('active');
+    }
+
+    function closeRepairModal() {
+      document.getElementById('repair-modal').classList.remove('active');
+    }
+
+    async function loadRepairHistory(reportId) {
+      const container = document.getElementById('repair-audit-list');
+      container.innerHTML = '<span style="color: var(--text-muted);">Loading audit history...</span>';
+
+      try {
+        const resp = await API.getRepairHistory(reportId);
+        if (resp.success && resp.data) {
+          if (resp.data.length === 0) {
+            container.innerHTML = '<span style="color: var(--text-muted);">No prior repair updates recorded yet.</span>';
+          } else {
+            container.innerHTML = resp.data.map(h => `
+              <div style="margin-bottom: 0.6rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border-color);">
+                <div style="display: flex; justify-content: space-between;">
+                  <strong>${h.previousStatus} → ${h.newStatus}</strong>
+                  <span style="color: var(--text-muted); font-size: 0.75rem;">${formatDate(h.updatedAt)}</span>
+                </div>
+                <div style="color: var(--text-muted); font-size: 0.8rem; margin-top: 0.15rem;">By ${escapeHtml(h.employee.fullName)}: "${escapeHtml(h.notes || 'No remarks')}"</div>
+              </div>
+            `).join('');
+          }
+        }
+      } catch (err) {
+        container.innerHTML = '<span style="color: #dc2626;">Failed to load audit history.</span>';
+      }
+    }
+
+    const repairForm = document.getElementById('repair-update-form');
+    repairForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = document.getElementById('current-report-id').value;
+      const newStatus = document.getElementById('new-repair-status').value;
+      const notes = document.getElementById('repair-notes').value.trim();
+      const btn = document.getElementById('save-repair-btn');
+
+      btn.disabled = true;
+      btn.textContent = 'Saving Progress...';
+
+      try {
+        const resp = await API.updateRepairStatus(id, newStatus, notes);
+        if (resp.success) {
+          showToast('Road repair status updated successfully!', 'success');
+          closeRepairModal();
+          loadStats();
+          loadReports();
+        }
+      } catch (err) {
+        showToast('Update failed: ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Save Repair Progress Update';
+      }
+    });
+
+    // C. Open Villager Summary & Rewards Modal
+    async function openVillagerSummaryModal(villagerId) {
+      if (!villagerId) {
+        showToast('Villager record ID not found.', 'error');
+        return;
+      }
+
+      const modal = document.getElementById('villager-summary-modal');
+      const tableBody = document.getElementById('vsum-reports-table');
+      tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 1.5rem; color: var(--text-muted);">Loading villager summary from database...</td></tr>';
+      modal.classList.add('active');
+
+      try {
+        const resp = await API.getVillagerSummary(villagerId);
+        if (resp.success && resp.data) {
+          const v = resp.data;
+          document.getElementById('vsum-name').textContent = `${v.fullName || 'Villager Citizen'} • Rewards Summary`;
+          document.getElementById('vsum-email').textContent = `${v.email || ''} • Registered Citizen`;
+          document.getElementById('vsum-submitted').textContent = v.totalSubmitted || 0;
+          document.getElementById('vsum-accepted').textContent = v.totalAccepted || 0;
+          document.getElementById('vsum-points-earned').textContent = `${v.totalPointsEarned != null ? v.totalPointsEarned : ((v.totalAccepted || 0) * 20)} pts`;
+          document.getElementById('vsum-points-balance').textContent = `${v.pointsBalance || 0} pts`;
+          document.getElementById('vsum-pending').textContent = `${v.pendingReports || 0} Pending`;
+          document.getElementById('vsum-inprogress').textContent = `${v.inProgressReports || 0} In Progress`;
+          document.getElementById('vsum-resolved').textContent = `${v.resolvedReports || 0} Resolved`;
+
+          const reports = v.recentReports || [];
+          if (reports.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 1.5rem; color: var(--text-muted);">No reports submitted yet by this villager.</td></tr>';
+          } else {
+            tableBody.innerHTML = reports.map(r => {
+              let stBadge = '';
+              if (r.status === 'EMPLOYEE_APPROVED' || r.status === 'ACCEPTED') stBadge = '<span class="badge badge-accepted">✓ Verified</span>';
+              else if (r.status === 'PENDING_EMPLOYEE_VERIFICATION' || r.status === 'PENDING_ADMIN_APPROVAL' || r.status === 'NEEDS_REVIEW') stBadge = '<span class="badge badge-pending">⏳ Awaiting Employee Verification</span>';
+              else if (r.status === 'EMPLOYEE_REJECTED') stBadge = `<span class="badge badge-rejected">✕ Rejected: ${escapeHtml(r.rejectionReason || 'No reason provided')}</span>`;
+              else if (r.status === 'AI_REJECTED' || r.status === 'REJECTED_BY_ADMIN') stBadge = '<span class="badge badge-rejected">✕ AI/Review Rejected</span>';
+              else if (r.status === 'REJECTED_UNRELATED') stBadge = '<span class="badge badge-rejected">✕ Unrelated</span>';
+              else if (r.status === 'REJECTED_DUPLICATE') stBadge = '<span class="badge badge-rejected">✕ Duplicate</span>';
+              else stBadge = '<span class="badge badge-pending">⏳ Review</span>';
+
+              let repBadge = '';
+              if (r.repairStatus === 'RESOLVED') repBadge = '<span class="badge badge-resolved">🚜 Resolved</span>';
+              else if (r.repairStatus === 'IN_PROGRESS') repBadge = '<span class="badge badge-inprogress">🔧 In Progress</span>';
+              else repBadge = '<span class="badge badge-pending">⏳ Pending</span>';
+
+              return `
+                <tr>
+                  <td><strong>${r.reportNumber}</strong></td>
+                  <td>${escapeHtml(r.roadName)}, ${escapeHtml(r.villageArea)}</td>
+                  <td>${escapeHtml(r.description || '-')}</td>
+                  <td>${stBadge}</td>
+                  <td>${repBadge}</td>
+                  <td>${r.pointsAwarded > 0 ? `<span class="badge badge-points">+${r.pointsAwarded} pts</span>` : '0 pts'}</td>
+                  <td style="color: var(--text-muted); font-size: 0.78rem;">${formatDate(r.createdAt)}</td>
+                </tr>
+              `;
+            }).join('');
+          }
+        }
+      } catch (err) {
+        showToast('Error loading villager summary: ' + err.message, 'error');
+      }
+    }
+
+    function closeVillagerSummaryModal() {
+      document.getElementById('villager-summary-modal').classList.remove('active');
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    // Modal background close listeners
+    window.addEventListener('click', (e) => {
+      const repModal = document.getElementById('repair-modal');
+      const vsumModal = document.getElementById('villager-summary-modal');
+      const appModal = document.getElementById('verification-approve-modal');
+      const rejModal = document.getElementById('verification-reject-modal');
+      const imgModal = document.getElementById('verification-image-modal');
+      if (e.target === repModal) closeRepairModal();
+      if (e.target === vsumModal) closeVillagerSummaryModal();
+      if (e.target === appModal) closeVerificationApproveModal();
+      if (e.target === rejModal) closeVerificationReject();
+      if (e.target === imgModal) closeVerificationImage();
+    });
+
+    loadStats();
+    loadReports();
+    loadPendingImageVerification();
+  </script>
+</body>
+</html>

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panchayat Employee Portal – Fill the Pockets</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body style="background: linear-gradient(180deg, var(--bg-cream) 0%, var(--bg-cream-dark) 100%);">
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/index.html" class="brand">
+        <div class="brand-icon">🏛️</div>
+        <div>
+          <div>Gram Panchayat Portal</div>
+          <span class="brand-subtitle">Fill the Pockets Administration</span>
+        </div>
+      </a>
+      <div class="nav-actions">
+        <a href="/index.html" class="btn btn-secondary btn-sm">Home</a>
+        <a href="/portal-select.html" class="btn btn-secondary btn-sm">All Portals</a>
+        <a href="/villager-login.html" class="btn btn-secondary btn-sm">Villager Login</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Employee Auth Wrapper -->
+  <main class="auth-wrapper">
+    <div class="auth-card" style="border-top: 4px solid var(--accent-gold); max-width: 520px;">
+
+      <!-- VIEW 1: EMPLOYEE LOGIN -->
+      <div id="view-emp-login">
+        <div class="auth-header">
+          <div class="auth-icon-badge employee">🏛️</div>
+          <h1 class="auth-title">Panchayat Employee Login</h1>
+          <p class="auth-subtitle">Authorized Staff Portal • Two-Factor Protected Access</p>
+        </div>
+
+        <div id="login-error-box" style="display: none; background: #fee2e2; color: #b91c1c; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.88rem; margin-bottom: 1.25rem;"></div>
+
+        <!-- Official Notice -->
+        <div style="background: var(--bg-cream); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+          <span style="font-size: 1.25rem;">🛡️</span>
+          <div style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.4;">
+            <strong>Official Panchayat Personnel:</strong> Enter your official credentials. A two-factor authentication modal will appear upon verification.
+          </div>
+        </div>
+
+        <form id="emp-login-form">
+          <div class="form-group">
+            <label class="form-label" for="emp-login-email">Official Employee Email</label>
+            <input type="email" id="emp-login-email" class="form-input" placeholder="e.g. arun.kumar@fillthepockets.demo" required autocomplete="email">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="emp-login-password">Password</label>
+            <input type="password" id="emp-login-password" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+
+          <button type="submit" id="emp-login-btn" class="btn btn-gold btn-lg" style="width: 100%; margin-top: 0.5rem;">
+            Verify Credentials & Request OTP
+          </button>
+        </form>
+
+        <div style="margin-top: 1.75rem; text-align: center; font-size: 0.95rem; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 1.25rem;">
+          New employee? 
+          <a href="javascript:void(0)" class="auth-switch-link" onclick="switchEmpView('request')">Request Access</a>
+        </div>
+
+        <div style="text-align: center; margin-top: 1rem; font-size: 0.82rem; color: var(--text-muted);">
+          Are you a village resident? 
+          <a href="/villager-login.html" style="font-weight: 600; color: var(--primary-light);">Villager Login Portal →</a>
+        </div>
+      </div>
+
+      <!-- VIEW 2: REQUEST EMPLOYEE ACCESS -->
+      <div id="view-emp-request" style="display: none;">
+        <div class="auth-header">
+          <div class="auth-icon-badge employee">🏛️</div>
+          <h1 class="auth-title">Request Employee Access</h1>
+          <p class="auth-subtitle">Panchayat Official Registration Request</p>
+        </div>
+
+        <div id="request-error-box" style="display: none; background: #fee2e2; color: #b91c1c; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.88rem; margin-bottom: 1.25rem;"></div>
+
+        <!-- Pending Approval Alert -->
+        <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.5rem; display: flex; align-items: flex-start; gap: 0.75rem;">
+          <span style="font-size: 1.2rem;">⚠️</span>
+          <div style="font-size: 0.82rem; color: #92400e; line-height: 1.45;">
+            <strong>Admin Approval Required:</strong> New employee registrations will remain in <strong>PENDING</strong> status until approved by a Panchayat administrator. Access is not active immediately.
+          </div>
+        </div>
+
+        <form id="emp-request-form">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="req-name">Full Name</label>
+              <input type="text" id="req-name" class="form-input" placeholder="e.g. Ramesh Kumar" required autocomplete="name">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="req-empid">Employee ID</label>
+              <input type="text" id="req-empid" class="form-input" placeholder="e.g. EMP109" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="req-email">Official Email Address</label>
+            <input type="email" id="req-email" class="form-input" placeholder="e.g. ramesh@panchayat.gov.in" required autocomplete="email">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="req-designation">Designation</label>
+              <input type="text" id="req-designation" class="form-input" placeholder="e.g. Junior Engineer" required>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="req-panchayat">Panchayat Name</label>
+              <input type="text" id="req-panchayat" class="form-input" placeholder="e.g. Sundarapuram" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="req-password">Password</label>
+              <input type="password" id="req-password" class="form-input" placeholder="Min 6 chars" required minlength="6" autocomplete="new-password">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="req-confirm-password">Confirm Password</label>
+              <input type="password" id="req-confirm-password" class="form-input" placeholder="Re-enter" required minlength="6" autocomplete="new-password">
+            </div>
+          </div>
+
+          <button type="submit" id="req-submit-btn" class="btn btn-gold btn-lg" style="width: 100%; margin-top: 0.5rem;">
+            Submit Access Request
+          </button>
+        </form>
+
+        <div style="margin-top: 1.75rem; text-align: center; font-size: 0.95rem; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 1.25rem;">
+          Already have an account? 
+          <a href="javascript:void(0)" class="auth-switch-link" onclick="switchEmpView('login')">Login</a>
+        </div>
+
+        <div style="text-align: center; margin-top: 1rem; font-size: 0.82rem; color: var(--text-muted);">
+          Are you a village resident? 
+          <a href="/villager-login.html" style="font-weight: 600; color: var(--primary-light);">Villager Login Portal →</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- 2FA Verification Pop-up Modal -->
+  <div id="otp-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 480px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.6rem;">
+          <span style="font-size: 1.5rem;">🔐</span>
+          <div>
+            <h3 class="modal-title">Two-Factor Authentication</h3>
+            <span id="modal-employee-info" style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600;">Panchayat Employee Verification</span>
+          </div>
+        </div>
+        <button type="button" class="modal-close" onclick="closeOtpModal()">&times;</button>
+      </div>
+
+      <div id="modal-error" style="display: none; background: #fee2e2; color: #b91c1c; padding: 0.65rem 0.85rem; border-radius: var(--radius-md); font-size: 0.85rem; margin-bottom: 1rem;"></div>
+
+      <!-- Mandatory Heading: DEMO OTP — NOT CONNECTED TO GOVERNMENT SYSTEMS -->
+      <div class="demo-otp-banner" id="demo-otp-banner" style="background: #fef3c7; border: 1.5px solid #fde68a; border-radius: var(--radius-md); padding: 1.25rem; text-align: center; margin-bottom: 1.5rem;">
+        <h4 style="color: #92400e; font-size: 0.92rem; font-weight: 800; letter-spacing: 0.05em; margin-bottom: 0.5rem; text-transform: uppercase;">
+          DEMO OTP — NOT CONNECTED TO GOVERNMENT SYSTEMS
+        </h4>
+        <div style="font-size: 0.88rem; color: #78350f; margin-bottom: 0.35rem;">
+          A demonstration verification code has been generated:
+        </div>
+        <div id="demo-code-text" style="font-size: 2.2rem; font-weight: 800; letter-spacing: 0.25em; color: var(--primary-dark); margin: 0.5rem 0;">------</div>
+        <div style="font-size: 0.78rem; color: #78350f; line-height: 1.4;">
+          🔒 Local Demo Mode: Verification code generated directly on the backend for college evaluation without SMS/email. Enter this demo code below to verify.
+        </div>
+      </div>
+
+      <form id="verify-otp-form">
+        <div class="form-group" style="text-align: center;">
+          <label class="form-label" for="otp-input" style="font-size: 0.95rem;">Enter 6-Digit Code</label>
+          <input type="text" id="otp-input" class="form-input" maxlength="6" pattern="[0-9]{6}" placeholder="000000" 
+                 style="font-size: 1.8rem; letter-spacing: 0.3em; text-align: center; font-weight: 700; width: 220px; margin: 0.25rem auto;" required autocomplete="one-time-code">
+          <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.5rem;" id="timer-text">
+            Code expires in: <strong id="countdown" style="color: var(--accent-gold);">05:00</strong>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; margin-top: 1.25rem;">
+          <button type="button" class="btn btn-secondary" onclick="closeOtpModal()" style="flex: 1;">
+            Cancel
+          </button>
+          <button type="submit" id="verify-btn" class="btn btn-primary" style="flex: 2;">
+            Verify OTP
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    let currentEmail = '';
+    let countdownInterval = null;
+    let failedAttempts = 0;
+
+    function switchEmpView(view) {
+      const loginView = document.getElementById('view-emp-login');
+      const reqView = document.getElementById('view-emp-request');
+      const loginErr = document.getElementById('login-error-box');
+      const reqErr = document.getElementById('request-error-box');
+      loginErr.style.display = 'none';
+      reqErr.style.display = 'none';
+
+      if (view === 'request') {
+        loginView.style.display = 'none';
+        reqView.style.display = 'block';
+        document.title = 'Request Employee Access – Fill the Pockets';
+      } else {
+        reqView.style.display = 'none';
+        loginView.style.display = 'block';
+        document.title = 'Panchayat Employee Login – Fill the Pockets';
+      }
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('tab') === 'request' || window.location.pathname.includes('register')) {
+      switchEmpView('request');
+    }
+
+    // Login Form Submission
+    const loginForm = document.getElementById('emp-login-form');
+    const loginBtn = document.getElementById('emp-login-btn');
+    const loginErr = document.getElementById('login-error-box');
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      loginErr.style.display = 'none';
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Checking Employee Credentials...';
+
+      const email = document.getElementById('emp-login-email').value.trim();
+      const password = document.getElementById('emp-login-password').value;
+      currentEmail = email;
+
+      try {
+        const resp = await API.initiateEmployeeLogin(email, password);
+        if (resp.success && resp.data) {
+          failedAttempts = 0;
+          openOtpModal(resp.data);
+        }
+      } catch (err) {
+        loginErr.textContent = err.message || 'Credential validation failed.';
+        loginErr.style.display = 'block';
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Verify Credentials & Request OTP';
+      }
+    });
+
+    // Request Access Form Submission
+    const reqForm = document.getElementById('emp-request-form');
+    const reqBtn = document.getElementById('req-submit-btn');
+    const reqErr = document.getElementById('request-error-box');
+
+    reqForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      reqErr.style.display = 'none';
+
+      const fullName = document.getElementById('req-name').value.trim();
+      const employeeId = document.getElementById('req-empid').value.trim();
+      const email = document.getElementById('req-email').value.trim();
+      const designation = document.getElementById('req-designation').value.trim();
+      const panchayatName = document.getElementById('req-panchayat').value.trim();
+      const pwd = document.getElementById('req-password').value;
+      const confirmPwd = document.getElementById('req-confirm-password').value;
+
+      if (pwd !== confirmPwd) {
+        reqErr.textContent = 'Passwords do not match. Please verify and re-type.';
+        reqErr.style.display = 'block';
+        return;
+      }
+
+      if (pwd.length < 6) {
+        reqErr.textContent = 'Password must be at least 6 characters long.';
+        reqErr.style.display = 'block';
+        return;
+      }
+
+      reqBtn.disabled = true;
+      reqBtn.textContent = 'Submitting Request...';
+
+      try {
+        const resp = await API.registerEmployee({
+          fullName, employeeId, email, designation, panchayatName, password: pwd
+        });
+        if (resp.success) {
+          showToast('Access request submitted! Your account status is PENDING administrator review.', 'info');
+          alert('Access request submitted successfully!\n\nYour account has been registered with status: PENDING.\nA Panchayat Administrator will review and activate your access.');
+          switchEmpView('login');
+          document.getElementById('emp-login-email').value = email;
+        }
+      } catch (err) {
+        reqErr.textContent = err.message || 'Submission failed. Please check your details.';
+        reqErr.style.display = 'block';
+      } finally {
+        reqBtn.disabled = false;
+        reqBtn.textContent = 'Submit Access Request';
+      }
+    });
+
+    // OTP Modal Functions
+    const verifyForm = document.getElementById('verify-otp-form');
+    const verifyBtn = document.getElementById('verify-btn');
+    const modalErr = document.getElementById('modal-error');
+
+    function openOtpModal(data) {
+      const banner = document.getElementById('demo-otp-banner');
+      if (data.demoMode && (data.demoCode || data.demoOtpCode)) {
+        if (banner) banner.style.display = 'block';
+        document.getElementById('demo-code-text').textContent = data.demoCode || data.demoOtpCode;
+      } else {
+        if (banner) banner.style.display = 'none';
+      }
+      document.getElementById('modal-employee-info').textContent = `${data.fullName || data.employeeName || 'Official'} (${data.designation || 'Staff'} • ${data.panchayatName || 'Gram Panchayat'})`;
+      document.getElementById('otp-input').value = '';
+      modalErr.style.display = 'none';
+      verifyBtn.disabled = false;
+      verifyBtn.textContent = 'Verify OTP';
+
+      startTimer(data.expiresInSeconds || 300);
+      document.getElementById('otp-modal').classList.add('active');
+      setTimeout(() => document.getElementById('otp-input').focus(), 150);
+    }
+
+    function closeOtpModal() {
+      document.getElementById('otp-modal').classList.remove('active');
+      if (countdownInterval) clearInterval(countdownInterval);
+      document.getElementById('emp-login-password').value = '';
+    }
+
+    function startTimer(seconds) {
+      if (countdownInterval) clearInterval(countdownInterval);
+      let rem = seconds;
+      const cd = document.getElementById('countdown');
+
+      countdownInterval = setInterval(() => {
+        rem--;
+        if (rem <= 0) {
+          clearInterval(countdownInterval);
+          cd.textContent = '00:00 (Expired)';
+          verifyBtn.disabled = true;
+          modalErr.textContent = 'Verification code has expired. Please close and re-authenticate.';
+          modalErr.style.display = 'block';
+        } else {
+          const m = String(Math.floor(rem / 60)).padStart(2, '0');
+          const s = String(rem % 60).padStart(2, '0');
+          cd.textContent = `${m}:${s}`;
+        }
+      }, 1000);
+    }
+
+    // Verify OTP Submission
+    verifyForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      modalErr.style.display = 'none';
+
+      const code = document.getElementById('otp-input').value.trim();
+      if (code.length !== 6) {
+        modalErr.textContent = 'Please enter the complete 6-digit code.';
+        modalErr.style.display = 'block';
+        return;
+      }
+
+      verifyBtn.disabled = true;
+      verifyBtn.textContent = 'Verifying Code...';
+
+      try {
+        const resp = await API.verifyEmployeeOtp(currentEmail, code);
+        if (resp.success && resp.data) {
+          API.setToken(resp.data.token);
+          API.setUser(resp.data);
+          showToast('Two-Factor Authentication successful!', 'success');
+          setTimeout(() => {
+            window.location.href = '/employee-dashboard.html';
+          }, 600);
+        }
+      } catch (err) {
+        modalErr.textContent = err.message || 'Invalid verification code. Please check and retry.';
+        modalErr.style.display = 'block';
+        if (err.message && err.message.toLowerCase().includes('exceeded')) {
+          verifyBtn.disabled = true;
+        } else {
+          verifyBtn.disabled = false;
+          verifyBtn.textContent = 'Verify OTP';
+        }
+      }
+    });
+  </script>
+</body>
+</html>

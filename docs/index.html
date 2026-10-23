@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fill the Pockets – Smart Village Road Reporting & Rewards System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/index.html" class="brand">
+        <div class="brand-icon">🛣️</div>
+        <div>
+          <div>Fill the Pockets</div>
+          <span class="brand-subtitle">Smart Village Road System</span>
+        </div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="/index.html" class="active">Home</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#community">Community Impact</a></li>
+        <li><a href="#rewards">Rewards</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- 1. Landing Page — Realistic Village Background with Two Large Buttons Visible on First Screen -->
+  <header class="landing-hero">
+    <div class="landing-hero-backdrop"></div>
+    <div class="landing-hero-content">
+      <span class="hero-tag" style="background: rgba(233,196,106,0.2); border-color: rgba(233,196,106,0.5);">
+        🌾 Gram Panchayat Rural Infrastructure System
+      </span>
+
+      <h1 style="font-size: 3.2rem; font-weight: 800; line-height: 1.15; margin: 0.6rem 0 1rem; letter-spacing: -0.02em;">
+        Fill the Pockets
+      </h1>
+
+      <h2 style="font-size: 1.85rem; font-weight: 700; color: var(--accent-gold-light); margin-bottom: 1.15rem; line-height: 1.3;">
+        Report Road Problems. Earn Points. Build Better Villages.
+      </h2>
+
+      <p style="font-size: 1.15rem; line-height: 1.6; max-width: 680px; margin: 0 auto; color: #f4efe6;">
+        Report damaged village roads, earn points for eligible reports, and help build safer communities.
+      </p>
+
+      <!-- Two Large Buttons Directly on First Screen (Visible Without Scrolling) -->
+      <div class="hero-actions-duo">
+        <button type="button" class="btn-landing-villager" onclick="openVillagerAuthModal('login')">
+          <span style="font-size: 1.4rem;">🧑‍🌾</span> Villager Login
+        </button>
+        <button type="button" class="btn-landing-employee" onclick="openEmployeeAuthModal('login')">
+          <span style="font-size: 1.4rem;">🏛️</span> Employee Login
+        </button>
+      </div>
+
+      <div style="margin-top: 1.75rem; font-size: 0.88rem; color: #d8f3dc;">
+        ⚡ Instant AI Image Verification • No Manual Point Bottlenecks • Official 2FA Staff Access
+      </div>
+    </div>
+  </header>
+
+  <!-- ------------------------------------------------------------
+       Villager Auth Modal (Login & Sign Up with Instant Switching)
+       ------------------------------------------------------------ -->
+  <div id="villager-auth-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 480px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.65rem;">
+          <span style="font-size: 1.6rem;">🧑‍🌾</span>
+          <div>
+            <h3 class="modal-title" id="villager-modal-title">Villager Login</h3>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Citizen Road Safety & Rewards Portal</span>
+          </div>
+        </div>
+        <button type="button" class="modal-close" onclick="closeVillagerAuthModal()">&times;</button>
+      </div>
+
+      <div id="villager-error" style="display: none; background: #fee2e2; color: #b91c1c; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.88rem; margin-bottom: 1.25rem;"></div>
+
+      <!-- VIEW A: Villager Login Form -->
+      <form id="modal-villager-login-form">
+        <div class="form-group">
+          <label class="form-label" for="v-login-email">Email Address</label>
+          <input type="email" id="v-login-email" class="form-input" placeholder="e.g. rajesh.villager@gmail.com" required autocomplete="email">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="v-login-password">Password</label>
+          <input type="password" id="v-login-password" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+
+        <button type="submit" id="v-login-btn" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 0.5rem;">
+          Login
+        </button>
+
+        <div style="text-align: center; margin-top: 1.5rem; font-size: 0.92rem; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 1.2rem;">
+          New user? <span class="auth-switch-link" onclick="switchVillagerView('signup')">Sign Up</span>
+        </div>
+      </form>
+
+      <!-- VIEW B: Villager Sign Up Form -->
+      <form id="modal-villager-signup-form" style="display: none;">
+        <div class="form-group">
+          <label class="form-label" for="v-reg-name">Full Name</label>
+          <input type="text" id="v-reg-name" class="form-input" placeholder="e.g. Ramesh Chandra" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="v-reg-email">Email Address</label>
+          <input type="email" id="v-reg-email" class="form-input" placeholder="e.g. ramesh.village@gmail.com" required autocomplete="email">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label class="form-label" for="v-reg-password">Password</label>
+            <input type="password" id="v-reg-password" class="form-input" placeholder="Min 6 characters" required minlength="6">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="v-reg-confirm">Confirm Password</label>
+            <input type="password" id="v-reg-confirm" class="form-input" placeholder="Re-enter password" required minlength="6">
+          </div>
+        </div>
+
+        <button type="submit" id="v-reg-btn" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 0.5rem;">
+          Create Account
+        </button>
+
+        <div style="text-align: center; margin-top: 1.5rem; font-size: 0.92rem; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 1.2rem;">
+          Already have an account? <span class="auth-switch-link" onclick="switchVillagerView('login')">Login</span>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ------------------------------------------------------------
+       Employee Auth Modal (Login & Access Request with Switching)
+       ------------------------------------------------------------ -->
+  <div id="employee-auth-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 520px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.65rem;">
+          <span style="font-size: 1.6rem;">🏛️</span>
+          <div>
+            <h3 class="modal-title" id="employee-modal-title">Employee Login</h3>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Authorized Gram Panchayat Staff Portal</span>
+          </div>
+        </div>
+        <button type="button" class="modal-close" onclick="closeEmployeeAuthModal()">&times;</button>
+      </div>
+
+      <div id="employee-error" style="display: none; background: #fee2e2; color: #b91c1c; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.88rem; margin-bottom: 1.25rem;"></div>
+      <div id="employee-success" style="display: none; background: #d8f3dc; color: #1b4332; padding: 0.85rem 1rem; border-radius: var(--radius-md); font-size: 0.88rem; margin-bottom: 1.25rem; line-height: 1.5;"></div>
+
+      <!-- VIEW A: Employee Login Form -->
+      <form id="modal-employee-login-form">
+        <div style="background: var(--bg-cream); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.75rem 1rem; margin-bottom: 1.25rem; font-size: 0.82rem; color: var(--text-muted);">
+          🔒 <strong>Official Staff Authentication:</strong> Enter your registered credentials to initiate the two-factor OTP verification pop-up.
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="emp-login-email">Employee Email</label>
+          <input type="email" id="emp-login-email" class="form-input" placeholder="e.g. arun.kumar@fillthepockets.demo" required autocomplete="email">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="emp-login-password">Password</label>
+          <input type="password" id="emp-login-password" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+        </div>
+
+        <button type="submit" id="emp-login-btn" class="btn btn-gold btn-lg" style="width: 100%; margin-top: 0.5rem;">
+          Login
+        </button>
+
+        <div style="text-align: center; margin-top: 1.5rem; font-size: 0.92rem; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 1.2rem;">
+          New employee? <span class="auth-switch-link" onclick="switchEmployeeView('request')">Request Access</span>
+        </div>
+      </form>
+
+      <!-- VIEW B: Employee Access Request Form -->
+      <form id="modal-employee-request-form" style="display: none;">
+        <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: var(--radius-md); padding: 0.75rem 1rem; margin-bottom: 1.25rem; font-size: 0.82rem; color: #92400e;">
+          🔒 Access requests are submitted in <strong>PENDING</strong> status. An administrator must approve your account before dashboard access is permitted.
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label class="form-label" for="emp-req-name">Full Name</label>
+            <input type="text" id="emp-req-name" class="form-input" placeholder="e.g. Suresh Varma" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="emp-req-code">Employee ID</label>
+            <input type="text" id="emp-req-code" class="form-input" placeholder="e.g. EMP102" required style="text-transform: uppercase;">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="emp-req-email">Official Email</label>
+          <input type="email" id="emp-req-email" class="form-input" placeholder="e.g. suresh.varma@panchayat.gov.in" required autocomplete="email">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label class="form-label" for="emp-req-designation">Designation</label>
+            <input type="text" id="emp-req-designation" class="form-input" placeholder="e.g. Road Overseer" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="emp-req-panchayat">Gram Panchayat</label>
+            <input type="text" id="emp-req-panchayat" class="form-input" value="Sundarapuram Gram Panchayat" required>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div class="form-group">
+            <label class="form-label" for="emp-req-password">Password</label>
+            <input type="password" id="emp-req-password" class="form-input" placeholder="Min 6 chars" required minlength="6">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="emp-req-confirm">Confirm Password</label>
+            <input type="password" id="emp-req-confirm" class="form-input" placeholder="Re-enter password" required minlength="6">
+          </div>
+        </div>
+
+        <button type="submit" id="emp-req-btn" class="btn btn-gold btn-lg" style="width: 100%; margin-top: 0.5rem;">
+          Submit Access Request
+        </button>
+
+        <div style="text-align: center; margin-top: 1.5rem; font-size: 0.92rem; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 1.2rem;">
+          Already have an account? <span class="auth-switch-link" onclick="switchEmployeeView('login')">Login</span>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ------------------------------------------------------------
+       6. Mandatory Employee OTP Pop-up Modal
+       ------------------------------------------------------------ -->
+  <div id="employee-otp-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 480px; text-align: center;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.6rem; text-align: left;">
+          <span style="font-size: 1.6rem;">🔐</span>
+          <div>
+            <h3 class="modal-title" style="font-size: 1.15rem; color: #92400e;">
+              DEMO OTP — NOT CONNECTED TO GOVERNMENT SYSTEMS
+            </h3>
+            <span id="otp-employee-badge" style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;">Panchayat Employee Verification</span>
+          </div>
+        </div>
+        <button type="button" class="modal-close" onclick="cancelEmployeeOtp()">&times;</button>
+      </div>
+
+      <div id="otp-modal-error" style="display: none; background: #fee2e2; color: #b91c1c; padding: 0.75rem 0.85rem; border-radius: var(--radius-md); font-size: 0.85rem; margin-bottom: 1rem; text-align: left;"></div>
+
+      <!-- Demo code banner -->
+      <div class="demo-otp-banner" id="otp-demo-banner" style="margin-bottom: 1.25rem;">
+        <div style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 0.35rem;">
+          A demonstration verification code has been generated:
+        </div>
+        <div class="demo-otp-display" id="otp-demo-code-text" style="font-size: 2.2rem; font-weight: 800; letter-spacing: 0.25em; color: var(--primary-dark); margin: 0.5rem 0;">
+          ------
+        </div>
+        <div style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.4;">
+          🔒 Local Demo Mode: Verification code generated directly on the backend for college evaluation without SMS/email. Enter this demo code below to verify.
+        </div>
+      </div>
+
+      <form id="employee-otp-verify-form">
+        <div class="form-group" style="text-align: center;">
+          <label class="form-label" for="otp-input-field" style="font-size: 0.95rem; font-weight: 700;">Enter OTP</label>
+          <input type="text" id="otp-input-field" class="form-input" maxlength="6" pattern="[0-9]{6}" placeholder="000000" 
+                 style="font-size: 1.9rem; letter-spacing: 0.3em; text-align: center; font-weight: 800; width: 220px; margin: 0.25rem auto;" required autocomplete="one-time-code">
+          <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.5rem;">
+            Code expires in: <strong id="otp-countdown" style="color: var(--accent-gold);">05:00</strong>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; margin-top: 1.25rem;">
+          <button type="button" class="btn btn-secondary" onclick="cancelEmployeeOtp()" style="flex: 1;">
+            Cancel
+          </button>
+          <button type="submit" id="otp-verify-btn" class="btn btn-primary" style="flex: 2;">
+            Verify OTP
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- How It Works Section (5 Distinct Steps) -->
+  <section class="section" id="how-it-works">
+    <div class="section-header">
+      <div class="section-subtitle">Automated Civic Workflow</div>
+      <h2 class="section-title">How Fill the Pockets Works</h2>
+      <p class="section-description">
+        A seamless 5-step cycle bridging active rural citizens with Gram Panchayat public works.
+      </p>
+    </div>
+
+    <div class="steps-grid-5">
+      <div class="step-card">
+        <div class="step-number">01</div>
+        <div class="step-icon">📸</div>
+        <h3>Capture Road Photo</h3>
+        <p>Villagers take or upload a photograph of the road defect, pothole cavity, or surface damage using mobile camera or gallery.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-number">02</div>
+        <div class="step-icon">📍</div>
+        <h3>Submit Location</h3>
+        <p>The device captures GPS coordinates automatically, with an easy manual fallback for road name and ward details.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-number">03</div>
+        <div class="step-icon">🧠</div>
+        <h3>AI Checks Image</h3>
+        <p>Our vision model screens road-damage photos and possible duplicates. AI-approved reports are sent to an employee for manual verification.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-number">04</div>
+        <div class="step-icon">🪙</div>
+        <h3>Employee Verifies Report</h3>
+        <p>An authorized Panchayat employee checks AI-approved photos and locations. Approved reports earn 20 points; rejected reports earn none.</p>
+      </div>
+
+      <div class="step-card">
+        <div class="step-number">05</div>
+        <div class="step-icon">🚜</div>
+        <h3>Panchayat Repairs Road</h3>
+        <p>Panchayat employees track verified reports on their dashboard, dispatch maintenance crews, and update progress to Resolved.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Community Section: Road Repair & Village Improvement -->
+  <section class="section" id="community" style="background: var(--bg-cream-dark); border-radius: var(--radius-lg); padding: 3.5rem 2rem; margin-bottom: 4rem;">
+    <div class="section-header">
+      <div class="section-subtitle">Community Transformation</div>
+      <h2 class="section-title">Rural Road Repair & Village Improvement</h2>
+      <p class="section-description">
+        Real-world community impact: empowering rural villages with dependable road connectivity, safer transportation, and cooperative pride.
+      </p>
+    </div>
+
+    <div class="community-grid">
+      <div class="community-card">
+        <div style="background: linear-gradient(135deg, #1b4332, #2d6a4f); color: #ffffff; padding: 2.25rem 1.75rem; text-align: center;">
+          <div style="font-size: 2.8rem; margin-bottom: 0.5rem;">🌾 🚜 🛣️</div>
+          <span class="badge" style="background: rgba(255,255,255,0.18); color: #ffffff; font-size: 0.75rem;">Agricultural Logistics</span>
+        </div>
+        <div class="community-card-body">
+          <div>
+            <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.5rem;">
+              Farmer Market Linkage
+            </h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.55;">
+              Smooth, pothole-free village roads reduce produce spoilage and transport damage for tractors, carts, and small commercial vehicles carrying harvests to regional markets.
+            </p>
+          </div>
+          <div style="margin-top: 1.25rem; font-size: 0.8rem; color: var(--primary); font-weight: 700;">
+            ✓ Faster delivery & reduced vehicular wear
+          </div>
+        </div>
+      </div>
+
+      <div class="community-card">
+        <div style="background: linear-gradient(135deg, #133324, #1b4332); color: #ffffff; padding: 2.25rem 1.75rem; text-align: center;">
+          <div style="font-size: 2.8rem; margin-bottom: 0.5rem;">🚶‍♂️ 🎒 🚸</div>
+          <span class="badge" style="background: rgba(255,255,255,0.18); color: #ffffff; font-size: 0.75rem;">Safe Village Commutes</span>
+        </div>
+        <div class="community-card-body">
+          <div>
+            <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.5rem;">
+              Pedestrian & School Bus Safety
+            </h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.55;">
+              Repairing deep waterlogged potholes and cracked road shoulders prevents daily accidents for school children, cyclists, and senior villagers walking between wards.
+            </p>
+          </div>
+          <div style="margin-top: 1.25rem; font-size: 0.8rem; color: var(--primary); font-weight: 700;">
+            ✓ Waterlogging prevention & pedestrian safety
+          </div>
+        </div>
+      </div>
+
+      <div class="community-card">
+        <div style="background: linear-gradient(135deg, #2d6a4f, #40916c); color: #ffffff; padding: 2.25rem 1.75rem; text-align: center;">
+          <div style="font-size: 2.8rem; margin-bottom: 0.5rem;">🏛️ 🛠️ 📋</div>
+          <span class="badge" style="background: rgba(255,255,255,0.18); color: #ffffff; font-size: 0.75rem;">Public Accountability</span>
+        </div>
+        <div class="community-card-body">
+          <div>
+            <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.5rem;">
+              Accountable Road Maintenance
+            </h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.55;">
+              Gram Panchayat maintenance crews log physical repair milestones with field timestamps, creating a tamper-proof digital audit trail of village road maintenance.
+            </p>
+          </div>
+          <div style="margin-top: 1.25rem; font-size: 0.8rem; color: var(--primary); font-weight: 700;">
+            ✓ Institutional transparency & verified repair notes
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Rewards Section: Explaining Points & Incentives -->
+  <section class="section" id="rewards">
+    <div class="card" style="border: 2px solid var(--accent-gold); background: #ffffff; padding: 2.5rem;">
+      <div class="card-header" style="border-bottom: none; padding-bottom: 0;">
+        <div>
+          <div class="section-subtitle">Earn While Helping Your Village</div>
+          <h2 class="card-title" style="font-size: 1.85rem;">Citizen Rewards & Points System</h2>
+          <div style="font-size: 0.95rem; color: var(--text-muted); margin-top: 0.25rem;">
+            Every genuine road defect report you submit strengthens your village community and earns real benefits.
+          </div>
+        </div>
+        <button type="button" class="btn btn-gold btn-sm" onclick="openVillagerAuthModal('signup')">
+          Join & Start Earning →
+        </button>
+      </div>
+
+      <div class="features-grid" style="margin-top: 2rem;">
+        <div style="background: var(--bg-cream); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+          <div style="font-size: 1.8rem; margin-bottom: 0.5rem;">🪙</div>
+          <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.4rem;">+20 Points Per Approved Report</h4>
+          <p style="font-size: 0.88rem; color: var(--text-muted);">
+            Points are added to your balance only after AI accepts your image and an authorized Panchayat employee verifies it.
+          </p>
+        </div>
+
+        <div style="background: var(--bg-cream); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+          <div style="font-size: 1.8rem; margin-bottom: 0.5rem;">🏪</div>
+          <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.4rem;">Cooperative Grocery Vouchers</h4>
+          <p style="font-size: 0.88rem; color: var(--text-muted);">
+            Redeem points for grocery coupons valid at Sundarapuram Village Cooperative Store for daily essential food items and cooking oils.
+          </p>
+        </div>
+
+        <div style="background: var(--bg-cream); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+          <div style="font-size: 1.8rem; margin-bottom: 0.5rem;">🌱</div>
+          <h4 style="font-size: 1.1rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.4rem;">Agricultural & Solar Subsidies</h4>
+          <p style="font-size: 0.88rem; color: var(--text-muted);">
+            Exchange points for farming seed and fertilizer subsidies or solar emergency lantern vouchers at the Grama Seva Kendra.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <h4>Fill the Pockets</h4>
+        <p>
+          Smart Village Road Reporting and Rewards System. A full-stack Java Spring Boot, MySQL, and AI application designed for rural road infrastructure and Gram Panchayat citizen empowerment.
+        </p>
+      </div>
+
+      <div class="footer-links">
+        <h5>Quick Portals</h5>
+        <ul>
+          <li><a href="javascript:void(0)" onclick="openVillagerAuthModal('login')">Villager Login</a></li>
+          <li><a href="javascript:void(0)" onclick="openVillagerAuthModal('signup')">Villager Sign Up</a></li>
+          <li><a href="javascript:void(0)" onclick="openEmployeeAuthModal('login')">Employee Login</a></li>
+          <li><a href="javascript:void(0)" onclick="openEmployeeAuthModal('request')">Employee Access Request</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-links">
+        <h5>Help & Contact</h5>
+        <ul>
+          <li><span>Grama Seva Kendra Helpdesk</span></li>
+          <li><span>Toll-Free Support: 1800-425-ROADS</span></li>
+          <li><span>Office Hours: Mon - Sat, 9 AM - 5 PM</span></li>
+          <li><span>Sundarapuram Gram Panchayat</span></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      &copy; 2026 Fill the Pockets – College Demonstration Project. Designed for Gram Panchayat Rural Public Infrastructure.
+    </div>
+  </footer>
+
+  <script src="/js/api.js"></script>
+  <script>
+    // ------------------------------------------------------------
+    // Villager Auth Modal Logic
+    // ------------------------------------------------------------
+    const villagerModal = document.getElementById('villager-auth-modal');
+    const villagerTitle = document.getElementById('villager-modal-title');
+    const villagerLoginForm = document.getElementById('modal-villager-login-form');
+    const villagerSignupForm = document.getElementById('modal-villager-signup-form');
+    const villagerError = document.getElementById('villager-error');
+
+    function openVillagerAuthModal(view) {
+      villagerError.style.display = 'none';
+      switchVillagerView(view);
+      villagerModal.classList.add('active');
+    }
+
+    function closeVillagerAuthModal() {
+      villagerModal.classList.remove('active');
+    }
+
+    function switchVillagerView(view) {
+      villagerError.style.display = 'none';
+      if (view === 'signup') {
+        villagerLoginForm.style.display = 'none';
+        villagerSignupForm.style.display = 'block';
+        villagerTitle.textContent = 'Create Villager Account';
+      } else {
+        villagerSignupForm.style.display = 'none';
+        villagerLoginForm.style.display = 'block';
+        villagerTitle.textContent = 'Villager Login';
+      }
+    }
+
+    // Villager Login Submit
+    villagerLoginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      villagerError.style.display = 'none';
+      const btn = document.getElementById('v-login-btn');
+      btn.disabled = true;
+      btn.textContent = 'Logging in...';
+
+      const email = document.getElementById('v-login-email').value.trim();
+      const password = document.getElementById('v-login-password').value;
+
+      try {
+        const resp = await API.loginVillager(email, password);
+        if (resp.success && resp.data) {
+          API.setToken(resp.data.token);
+          API.setUser(resp.data);
+          showToast('Login successful! Opening dashboard...', 'success');
+          setTimeout(() => {
+            window.location.href = '/villager-dashboard.html';
+          }, 500);
+        }
+      } catch (err) {
+        villagerError.textContent = err.message || 'Login failed. Please check credentials.';
+        villagerError.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Login';
+      }
+    });
+
+    // Villager Sign Up Submit
+    villagerSignupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      villagerError.style.display = 'none';
+
+      const pwd = document.getElementById('v-reg-password').value;
+      const confirmPwd = document.getElementById('v-reg-confirm').value;
+
+      if (pwd !== confirmPwd) {
+        villagerError.textContent = 'Passwords do not match. Please verify both password fields.';
+        villagerError.style.display = 'block';
+        return;
+      }
+
+      if (pwd.length < 6) {
+        villagerError.textContent = 'Password must be at least 6 characters.';
+        villagerError.style.display = 'block';
+        return;
+      }
+
+      const btn = document.getElementById('v-reg-btn');
+      btn.disabled = true;
+      btn.textContent = 'Creating Account...';
+
+      const data = {
+        fullName: document.getElementById('v-reg-name').value.trim(),
+        email: document.getElementById('v-reg-email').value.trim(),
+        password: pwd,
+        confirmPassword: confirmPwd
+      };
+
+      try {
+        const resp = await API.registerVillager(data);
+        if (resp.success && resp.data) {
+          API.setToken(resp.data.token);
+          API.setUser(resp.data);
+          showToast('Account created successfully! Welcome.', 'success');
+          setTimeout(() => {
+            window.location.href = '/villager-dashboard.html';
+          }, 500);
+        }
+      } catch (err) {
+        villagerError.textContent = err.message || 'Registration failed. Email may already be in use.';
+        villagerError.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Create Account';
+      }
+    });
+
+    // ------------------------------------------------------------
+    // Employee Auth Modal Logic
+    // ------------------------------------------------------------
+    const employeeModal = document.getElementById('employee-auth-modal');
+    const employeeTitle = document.getElementById('employee-modal-title');
+    const employeeLoginForm = document.getElementById('modal-employee-login-form');
+    const employeeRequestForm = document.getElementById('modal-employee-request-form');
+    const employeeError = document.getElementById('employee-error');
+    const employeeSuccess = document.getElementById('employee-success');
+
+    let currentEmployeeEmail = '';
+    let countdownInterval = null;
+
+    function openEmployeeAuthModal(view) {
+      employeeError.style.display = 'none';
+      employeeSuccess.style.display = 'none';
+      switchEmployeeView(view);
+      employeeModal.classList.add('active');
+    }
+
+    function closeEmployeeAuthModal() {
+      employeeModal.classList.remove('active');
+    }
+
+    function switchEmployeeView(view) {
+      employeeError.style.display = 'none';
+      employeeSuccess.style.display = 'none';
+      if (view === 'request') {
+        employeeLoginForm.style.display = 'none';
+        employeeRequestForm.style.display = 'block';
+        employeeTitle.textContent = 'Request Employee Access';
+      } else {
+        employeeRequestForm.style.display = 'none';
+        employeeLoginForm.style.display = 'block';
+        employeeTitle.textContent = 'Employee Login';
+      }
+    }
+
+    // Employee Login Submit -> Triggers OTP Modal
+    employeeLoginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      employeeError.style.display = 'none';
+      const btn = document.getElementById('emp-login-btn');
+      btn.disabled = true;
+      btn.textContent = 'Checking credentials...';
+
+      const email = document.getElementById('emp-login-email').value.trim();
+      const password = document.getElementById('emp-login-password').value;
+      currentEmployeeEmail = email;
+
+      try {
+        const resp = await API.initiateEmployeeLogin(email, password);
+        if (resp.success && resp.data) {
+          closeEmployeeAuthModal();
+          openOtpModal(resp.data);
+        }
+      } catch (err) {
+        employeeError.textContent = err.message || 'Credential validation failed.';
+        employeeError.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Login';
+      }
+    });
+
+    // Employee Access Request Submit
+    employeeRequestForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      employeeError.style.display = 'none';
+      employeeSuccess.style.display = 'none';
+
+      const pwd = document.getElementById('emp-req-password').value;
+      const confirmPwd = document.getElementById('emp-req-confirm').value;
+
+      if (pwd !== confirmPwd) {
+        employeeError.textContent = 'Passwords do not match.';
+        employeeError.style.display = 'block';
+        return;
+      }
+
+      const btn = document.getElementById('emp-req-btn');
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+
+      const data = {
+        fullName: document.getElementById('emp-req-name').value.trim(),
+        employeeCode: document.getElementById('emp-req-code').value.trim().toUpperCase(),
+        email: document.getElementById('emp-req-email').value.trim(),
+        designation: document.getElementById('emp-req-designation').value.trim(),
+        panchayatName: document.getElementById('emp-req-panchayat').value.trim(),
+        password: pwd,
+        confirmPassword: confirmPwd
+      };
+
+      try {
+        const resp = await API.requestEmployeeAccess(data);
+        employeeRequestForm.reset();
+        employeeSuccess.innerHTML = `
+          <strong>✓ Request Submitted (Status: PENDING)</strong><br>
+          An authorized administrator must approve your account before dashboard access is permitted.
+        `;
+        employeeSuccess.style.display = 'block';
+        setTimeout(() => {
+          switchEmployeeView('login');
+        }, 2500);
+      } catch (err) {
+        employeeError.textContent = err.message || 'Request failed. Employee ID or email may exist.';
+        employeeError.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Submit Access Request';
+      }
+    });
+
+    // ------------------------------------------------------------
+    // 6. Mandatory Employee OTP Pop-up Logic
+    // ------------------------------------------------------------
+    const otpModal = document.getElementById('employee-otp-modal');
+    const otpError = document.getElementById('otp-modal-error');
+    const otpVerifyForm = document.getElementById('employee-otp-verify-form');
+    const otpVerifyBtn = document.getElementById('otp-verify-btn');
+
+    function openOtpModal(data) {
+      document.getElementById('otp-employee-badge').textContent = `${data.employeeCode || ''} • ${data.employeeName || ''} (${data.designation || ''})`;
+      
+      const banner = document.getElementById('otp-demo-banner');
+      if (data.demoMode && (data.demoOtpCode || data.demoCode)) {
+        banner.style.display = 'block';
+        document.getElementById('otp-demo-code-text').textContent = data.demoOtpCode || data.demoCode;
+        document.getElementById('otp-input-field').value = '';
+      } else {
+        banner.style.display = 'none';
+        document.getElementById('otp-input-field').value = '';
+      }
+
+      otpVerifyBtn.disabled = false;
+      otpVerifyBtn.textContent = 'Verify OTP';
+      startOtpCountdown(data.expiresInSeconds || 300);
+      otpError.style.display = 'none';
+      otpModal.classList.add('active');
+      setTimeout(() => document.getElementById('otp-input-field').focus(), 150);
+    }
+
+    function cancelEmployeeOtp() {
+      otpModal.classList.remove('active');
+      if (countdownInterval) clearInterval(countdownInterval);
+      // Return to employee login modal
+      openEmployeeAuthModal('login');
+    }
+
+    function startOtpCountdown(seconds) {
+      if (countdownInterval) clearInterval(countdownInterval);
+      let rem = seconds;
+      const display = document.getElementById('otp-countdown');
+
+      countdownInterval = setInterval(() => {
+        const m = Math.floor(rem / 60);
+        const s = rem % 60;
+        display.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        rem--;
+        if (rem < 0) {
+          clearInterval(countdownInterval);
+          display.textContent = '00:00 (Expired)';
+          otpVerifyBtn.disabled = true;
+          otpError.textContent = 'Verification code has expired. Please log in again.';
+          otpError.style.display = 'block';
+        }
+      }, 1000);
+    }
+
+    otpVerifyForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      otpError.style.display = 'none';
+      const code = document.getElementById('otp-input-field').value.trim();
+
+      if (code.length !== 6) {
+        otpError.textContent = 'Please enter the complete 6-digit code.';
+        otpError.style.display = 'block';
+        return;
+      }
+
+      otpVerifyBtn.disabled = true;
+      otpVerifyBtn.textContent = 'Verifying OTP...';
+
+      try {
+        const resp = await API.verifyEmployeeOtp(currentEmployeeEmail, code);
+        if (resp.success && resp.data) {
+          API.setToken(resp.data.token);
+          API.setUser(resp.data);
+          showToast('OTP verified successfully! Opening Employee Dashboard...', 'success');
+          setTimeout(() => {
+            window.location.href = '/employee-dashboard.html';
+          }, 500);
+        }
+      } catch (err) {
+        otpError.textContent = err.message || 'Incorrect verification code. Please check and retry.';
+        otpError.style.display = 'block';
+        if (err.message && err.message.toLowerCase().includes('exceeded')) {
+          otpVerifyBtn.disabled = true;
+        } else {
+          otpVerifyBtn.disabled = false;
+          otpVerifyBtn.textContent = 'Verify OTP';
+        }
+      }
+    });
+
+    // Close modals on overlay backdrop click
+    window.addEventListener('click', (e) => {
+      if (e.target === villagerModal) closeVillagerAuthModal();
+      if (e.target === employeeModal) closeEmployeeAuthModal();
+      if (e.target === otpModal) cancelEmployeeOtp();
+    });
+
+
+  </script>
+</body>
+</html>

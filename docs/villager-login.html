@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Villager Access Portal – Fill the Pockets</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/index.html" class="brand">
+        <div class="brand-icon">🛣️</div>
+        <div>
+          <div>Fill the Pockets</div>
+          <span class="brand-subtitle">Smart Village Road System</span>
+        </div>
+      </a>
+      <div class="nav-actions">
+        <a href="/index.html" class="btn btn-secondary btn-sm">Home</a>
+        <a href="/portal-select.html" class="btn btn-secondary btn-sm">All Portals</a>
+        <a href="/employee-login.html" class="btn btn-gold btn-sm">🏛️ Panchayat Employee</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Auth Card Container -->
+  <main class="auth-wrapper">
+    <div class="auth-card" style="max-width: 480px;">
+
+      <!-- VIEW 1: VILLAGER LOGIN -->
+      <div id="view-login">
+        <div class="auth-header">
+          <div class="auth-icon-badge">🧑‍🌾</div>
+          <h1 class="auth-title">Villager Login</h1>
+          <p class="auth-subtitle">Sign in to report road problems, track repairs, and earn points</p>
+        </div>
+
+        <div id="login-error-message" style="display: none; background: #fee2e2; color: #b91c1c; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.88rem; margin-bottom: 1.25rem;"></div>
+
+        <form id="villager-login-form">
+          <div class="form-group">
+            <label class="form-label" for="login-email">Email Address</label>
+            <input type="email" id="login-email" class="form-input" placeholder="e.g. rajesh.villager@gmail.com" required autocomplete="email">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="login-password">Password</label>
+            <input type="password" id="login-password" class="form-input" placeholder="••••••••" required autocomplete="current-password">
+          </div>
+
+          <button type="submit" id="login-submit-btn" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 0.5rem;">
+            Sign In to Citizen Dashboard
+          </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 1.75rem; font-size: 0.95rem; color: var(--text-muted); padding-top: 1.25rem; border-top: 1px solid var(--border-color);">
+          New user? 
+          <a href="javascript:void(0)" class="auth-switch-link" onclick="switchView('signup')">Sign Up</a>
+        </div>
+
+        <div style="text-align: center; margin-top: 1rem; font-size: 0.82rem; color: var(--text-muted);">
+          Are you a Panchayat Employee? 
+          <a href="/employee-login.html" style="font-weight: 600; color: var(--accent-gold);">Use Employee Login Portal →</a>
+        </div>
+      </div>
+
+      <!-- VIEW 2: VILLAGER SIGN UP -->
+      <div id="view-signup" style="display: none;">
+        <div class="auth-header">
+          <div class="auth-icon-badge">📝</div>
+          <h1 class="auth-title">Villager Sign Up</h1>
+          <p class="auth-subtitle">Create your citizen account to report potholes and earn rewards</p>
+        </div>
+
+        <div id="signup-error-message" style="display: none; background: #fee2e2; color: #b91c1c; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.88rem; margin-bottom: 1.25rem;"></div>
+
+        <form id="villager-signup-form">
+          <div class="form-group">
+            <label class="form-label" for="signup-name">Full Name</label>
+            <input type="text" id="signup-name" class="form-input" placeholder="e.g. Ramesh Chandra" required autocomplete="name">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="signup-email">Email Address</label>
+            <input type="email" id="signup-email" class="form-input" placeholder="e.g. ramesh.village@gmail.com" required autocomplete="email">
+            <div class="form-help">Used for account security, verification, and reward notifications.</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="signup-phone">Mobile Phone (Optional)</label>
+            <input type="tel" id="signup-phone" class="form-input" placeholder="e.g. +91 98765 43210" autocomplete="tel">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="signup-password">Password</label>
+              <input type="password" id="signup-password" class="form-input" placeholder="Min 6 chars" required minlength="6" autocomplete="new-password">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="signup-confirm-password">Confirm Password</label>
+              <input type="password" id="signup-confirm-password" class="form-input" placeholder="Re-enter" required minlength="6" autocomplete="new-password">
+            </div>
+          </div>
+
+          <button type="submit" id="signup-submit-btn" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 0.5rem;">
+            Create Account
+          </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 1.75rem; font-size: 0.95rem; color: var(--text-muted); padding-top: 1.25rem; border-top: 1px solid var(--border-color);">
+          Already have an account? 
+          <a href="javascript:void(0)" class="auth-switch-link" onclick="switchView('login')">Login</a>
+        </div>
+
+        <div style="text-align: center; margin-top: 1rem; font-size: 0.82rem; color: var(--text-muted);">
+          Are you a Panchayat Employee? 
+          <a href="/employee-login.html" style="font-weight: 600; color: var(--accent-gold);">Use Employee Login Portal →</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script>
+    function switchView(view) {
+      const loginView = document.getElementById('view-login');
+      const signupView = document.getElementById('view-signup');
+      const loginErr = document.getElementById('login-error-message');
+      const signupErr = document.getElementById('signup-error-message');
+      loginErr.style.display = 'none';
+      signupErr.style.display = 'none';
+
+      if (view === 'signup') {
+        loginView.style.display = 'none';
+        signupView.style.display = 'block';
+        document.title = 'Villager Sign Up – Fill the Pockets';
+      } else {
+        signupView.style.display = 'none';
+        loginView.style.display = 'block';
+        document.title = 'Villager Login – Fill the Pockets';
+      }
+    }
+
+    // Auto-detect tab from URL query
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('tab') === 'signup' || window.location.pathname.includes('register')) {
+      switchView('signup');
+    }
+
+    // Login Form Handler
+    const loginForm = document.getElementById('villager-login-form');
+    const loginBtn = document.getElementById('login-submit-btn');
+    const loginErr = document.getElementById('login-error-message');
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      loginErr.style.display = 'none';
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Signing in...';
+
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+
+      try {
+        const resp = await API.loginVillager(email, password);
+        if (resp.success && resp.data) {
+          API.setToken(resp.data.token);
+          API.setUser(resp.data);
+          showToast('Login successful! Redirecting...', 'success');
+          setTimeout(() => {
+            window.location.href = '/villager-dashboard.html';
+          }, 600);
+        }
+      } catch (err) {
+        loginErr.textContent = err.message || 'Login failed. Please check your credentials.';
+        loginErr.style.display = 'block';
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Sign In to Citizen Dashboard';
+      }
+    });
+
+    // Sign Up Form Handler
+    const signupForm = document.getElementById('villager-signup-form');
+    const signupBtn = document.getElementById('signup-submit-btn');
+    const signupErr = document.getElementById('signup-error-message');
+
+    signupForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      signupErr.style.display = 'none';
+
+      const fullName = document.getElementById('signup-name').value.trim();
+      const email = document.getElementById('signup-email').value.trim();
+      const phone = document.getElementById('signup-phone').value.trim();
+      const pwd = document.getElementById('signup-password').value;
+      const confirmPwd = document.getElementById('signup-confirm-password').value;
+
+      if (pwd !== confirmPwd) {
+        signupErr.textContent = 'Passwords do not match. Please verify and re-type.';
+        signupErr.style.display = 'block';
+        return;
+      }
+
+      if (pwd.length < 6) {
+        signupErr.textContent = 'Password must be at least 6 characters long.';
+        signupErr.style.display = 'block';
+        return;
+      }
+
+      signupBtn.disabled = true;
+      signupBtn.textContent = 'Creating Account...';
+
+      try {
+        const resp = await API.registerVillager({ fullName, email, password: pwd, phone });
+        if (resp.success) {
+          showToast('Account created successfully! Signing in...', 'success');
+          const loginResp = await API.loginVillager(email, pwd);
+          if (loginResp.success && loginResp.data) {
+            API.setToken(loginResp.data.token);
+            API.setUser(loginResp.data);
+            setTimeout(() => {
+              window.location.href = '/villager-dashboard.html';
+            }, 600);
+          }
+        }
+      } catch (err) {
+        signupErr.textContent = err.message || 'Registration failed. Please check your details.';
+        signupErr.style.display = 'block';
+        signupBtn.disabled = false;
+        signupBtn.textContent = 'Create Account';
+      }
+    });
+  </script>
+</body>
+</html>

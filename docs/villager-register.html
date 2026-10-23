@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Villager Registration – Fill the Pockets</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/index.html" class="brand">
+        <div class="brand-icon">🛣️</div>
+        <div>
+          <div>Fill the Pockets</div>
+          <span class="brand-subtitle">Smart Village Road System</span>
+        </div>
+      </a>
+      <div class="nav-actions">
+        <a href="/villager-login.html" class="btn btn-secondary btn-sm">Villager Login</a>
+        <a href="/employee-login.html" class="btn btn-gold btn-sm">🏛️ Panchayat Employee</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Registration Form Wrapper -->
+  <main class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-icon-badge">📝</div>
+        <h1 class="auth-title">Citizen Registration</h1>
+        <p class="auth-subtitle">Join your local village community to report potholes and earn reward vouchers</p>
+      </div>
+
+      <div id="error-message" style="display: none; background: #fee2e2; color: #b91c1c; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.88rem; margin-bottom: 1.25rem;"></div>
+
+      <form id="villager-register-form">
+        <div class="form-group">
+          <label class="form-label" for="fullName">Full Name</label>
+          <input type="text" id="fullName" class="form-input" placeholder="e.g. Ramesh Chandra" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address</label>
+          <input type="email" id="email" class="form-input" placeholder="e.g. ramesh.village@gmail.com" required>
+          <div class="form-help">Your email is used for account security and reward notifications.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="phone">Mobile Phone (Optional)</label>
+          <input type="tel" id="phone" class="form-input" placeholder="e.g. +91 98765 43210">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label" for="password">Create Password</label>
+            <input type="password" id="password" class="form-input" placeholder="Minimum 6 characters" required minlength="6">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="confirmPassword">Confirm Password</label>
+            <input type="password" id="confirmPassword" class="form-input" placeholder="Re-enter password" required minlength="6">
+          </div>
+        </div>
+
+        <button type="submit" id="submit-btn" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 0.5rem;">
+          Complete Registration
+        </button>
+      </form>
+
+      <div style="text-align: center; margin-top: 1.75rem; font-size: 0.92rem; color: var(--text-muted); padding-top: 1.25rem; border-top: 1px solid var(--border-color);">
+        Already have an account? 
+        <a href="/villager-login.html" style="font-weight: 700; color: var(--primary);">Sign in here</a>
+      </div>
+
+      <div style="text-align: center; margin-top: 0.75rem; font-size: 0.82rem; color: var(--text-muted);">
+        Are you a Panchayat Employee? 
+        <a href="/portal-select.html" style="font-weight: 600; color: var(--accent-gold);">View All Portals →</a>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script>
+    const form = document.getElementById('villager-register-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const errorBox = document.getElementById('error-message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorBox.style.display = 'none';
+
+      const pwd = document.getElementById('password').value;
+      const confirmPwd = document.getElementById('confirmPassword').value;
+
+      if (pwd !== confirmPwd) {
+        errorBox.textContent = 'Passwords do not match. Please verify both password fields.';
+        errorBox.style.display = 'block';
+        return;
+      }
+
+      if (pwd.length < 6) {
+        errorBox.textContent = 'Password must be at least 6 characters long.';
+        errorBox.style.display = 'block';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Registering...';
+
+      const data = {
+        fullName: document.getElementById('fullName').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        password: pwd,
+        confirmPassword: confirmPwd
+      };
+
+      try {
+        const resp = await API.registerVillager(data);
+        if (resp.success && resp.data) {
+          API.setToken(resp.data.token);
+          API.setUser(resp.data);
+          showToast('Account registered successfully! Redirecting...', 'success');
+          setTimeout(() => {
+            window.location.href = '/villager-dashboard.html';
+          }, 600);
+        }
+      } catch (err) {
+        errorBox.textContent = err.message || 'Registration failed. Please try again.';
+        errorBox.style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Complete Registration';
+      }
+    });
+  </script>
+</body>
+</html>
