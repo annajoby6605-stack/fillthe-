@@ -1,0 +1,228 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | Fill the Pockets</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            padding: 32px;
+            border-radius: 14px;
+            box-shadow: 0 5px 25px #00000012;
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #163b32;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 28px;
+        }
+
+        label {
+            display: block;
+            margin: 16px 0 8px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            font-size: 16px;
+        }
+
+        input:focus {
+            outline: 2px solid #163b32;
+            border-color: transparent;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 22px;
+            padding: 13px;
+            border: none;
+            border-radius: 7px;
+            background: #163b32;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #message {
+            display: none;
+            margin-top: 18px;
+            padding: 12px;
+            border-radius: 7px;
+            overflow-wrap: anywhere;
+        }
+
+        #message.success,
+        #message.error,
+        #message.info {
+            display: block;
+        }
+
+        #message.success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        #message.error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        #message.info {
+            background: #e0f2fe;
+            color: #075985;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 22px;
+            text-align: center;
+            color: #163b32;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <main class="login-card">
+        <h1>Fill the Pockets</h1>
+        <p class="subtitle">Administrator Login</p>
+
+        <form id="adminLoginForm">
+            <label for="email">Admin Email</label>
+            <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="Enter admin email"
+                autocomplete="username"
+                required
+            >
+
+            <label for="password">Password</label>
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter password"
+                autocomplete="current-password"
+                required
+            >
+
+            <button type="submit" id="loginBtn">
+                Login as Admin
+            </button>
+        </form>
+
+        <div id="message" role="status" aria-live="polite"></div>
+
+        <a class="back-link" href="/villager-login.html">
+            Back to Villager Login
+        </a>
+    </main>
+
+    <script src="/js/api.js"></script>
+
+    <script>
+        const form = document.getElementById('adminLoginForm');
+        const loginBtn = document.getElementById('loginBtn');
+        const messageBox = document.getElementById('message');
+
+        function showMessage(message, type) {
+            messageBox.textContent = message;
+            messageBox.className = type;
+        }
+
+        form.addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Logging in...';
+
+            showMessage(
+                'Checking administrator credentials...',
+                'info'
+            );
+
+            try {
+                const response = await API.loginAdmin(email, password);
+                const data = response.data || response;
+
+                if (!data.token) {
+                    throw new Error(
+                        'No authentication token was returned by the server.'
+                    );
+                }
+
+                if (data.role !== 'ADMIN') {
+                    throw new Error(
+                        'This account is not an administrator account.'
+                    );
+                }
+
+                // Save authentication using the existing API helper.
+                API.setToken(data.token);
+                API.setUser(data);
+
+                showMessage(
+                    'Login successful! Opening dashboard...',
+                    'success'
+                );
+
+                window.location.href = '/admin-dashboard.html';
+
+            } catch (error) {
+                showMessage(
+                    error.message ||
+                    'Login failed. Check your email and password.',
+                    'error'
+                );
+
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Login as Admin';
+            }
+        });
+    </script>
+</body>
+</html>
+```

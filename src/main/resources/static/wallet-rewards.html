@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Points Wallet & Rewards – Fill the Pockets</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/villager-dashboard.html" class="brand">
+        <div class="brand-icon">🎁</div>
+        <div>
+          <div>Fill the Pockets</div>
+          <span class="brand-subtitle">Points Wallet & Rewards</span>
+        </div>
+      </a>
+      <div class="nav-actions">
+        <a href="/villager-dashboard.html" class="btn btn-secondary btn-sm">← Back to Dashboard</a>
+        <a href="/report-problem.html" class="btn btn-primary btn-sm">📸 Report Road Problem (+20 pts)</a>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="API.logout()">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="section">
+    <!-- Wallet Header Banner -->
+    <div class="card" style="background: linear-gradient(135deg, #133324 0%, #1b4332 50%, #2d6a4f 100%); color: #ffffff; padding: 2.5rem; margin-bottom: 2.5rem; border: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
+        <div>
+          <span class="badge badge-points" style="background: rgba(233,196,106,0.2); color: var(--accent-gold-light); margin-bottom: 0.75rem;">
+            🌾 Gram Panchayat Civic Rewards
+          </span>
+          <h1 style="font-size: 2.25rem; font-weight: 800; line-height: 1.2;">
+            Citizen Rewards Wallet
+          </h1>
+          <p style="color: #e3ded6; font-size: 1rem; max-width: 540px; margin-top: 0.5rem;">
+            Earn <strong>20 points</strong> for every road report verified by the AI vision system. Redeem points below for village cooperative store vouchers.
+          </p>
+        </div>
+
+        <div style="background: rgba(255, 255, 255, 0.1); border: 1.5px solid rgba(233, 196, 106, 0.4); border-radius: var(--radius-lg); padding: 1.5rem 2rem; text-align: center; backdrop-filter: blur(8px);">
+          <div style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent-gold-light);">Available Balance</div>
+          <div style="font-size: 2.8rem; font-weight: 800; color: #ffffff;" id="wallet-balance">0</div>
+          <div style="font-size: 0.8rem; color: #d8f3dc;" id="wallet-eligibility-text">Loading eligibility...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Available Coupons Section -->
+    <div style="margin-bottom: 3.5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem;">
+        <div>
+          <h2 class="card-title" style="font-size: 1.5rem;">Available Village Reward Coupons</h2>
+          <p style="font-size: 0.9rem; color: var(--text-muted);">
+            Clearly labeled demo rewards for college presentation demonstration.
+          </p>
+        </div>
+        <span class="badge badge-points" style="padding: 0.4rem 0.85rem;">Demo Reward Program Active</span>
+      </div>
+
+      <div class="features-grid" id="coupons-grid">
+        <div style="text-align: center; grid-column: 1 / -1; padding: 2rem; color: var(--text-muted);">
+          Loading reward coupons...
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Redeemed Vouchers -->
+    <div class="card" style="margin-bottom: 3rem;">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">My Redeemed Reward Vouchers</h2>
+          <span style="font-size: 0.85rem; color: var(--text-muted);">Present these codes at village cooperative counters</span>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Voucher Code</th>
+              <th>Reward Item</th>
+              <th>Points Used</th>
+              <th>Date Redeemed</th>
+              <th>Valid Until</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="vouchers-table-body">
+            <tr>
+              <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">No coupons redeemed yet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Points Transaction Ledger -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">Points Transaction History</h2>
+          <span style="font-size: 0.85rem; color: var(--text-muted);">Complete immutable audit log of points earned and spent</span>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Transaction ID</th>
+              <th>Type</th>
+              <th>Description</th>
+              <th>Points Change</th>
+              <th>Balance After</th>
+              <th>Timestamp</th>
+            </tr>
+          </thead>
+          <tbody id="tx-table-body">
+            <tr>
+              <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">Loading transactions...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script>
+    const user = API.getUser();
+    if (!user || user.role !== 'VILLAGER') {
+      window.location.href = '/villager-login.html';
+    }
+
+    let currentBalance = 0;
+
+    async function loadWallet() {
+      try {
+        const walletResp = await API.getWallet();
+        if (walletResp.success && walletResp.data) {
+          const w = walletResp.data;
+          currentBalance = w.pointsBalance;
+          document.getElementById('wallet-balance').textContent = `${w.pointsBalance} pts`;
+
+          const eligText = document.getElementById('wallet-eligibility-text');
+          if (w.pointsBalance >= 40) {
+            eligText.textContent = '✓ Eligible to redeem reward coupons!';
+            eligText.style.color = '#a7f3d0';
+          } else {
+            const needed = 40 - w.pointsBalance;
+            eligText.textContent = `Earn ${needed} more points to reach first reward coupon (40 pts).`;
+            eligText.style.color = '#fefae0';
+          }
+
+          renderTransactions(w.transactions || []);
+        }
+
+        // Load Coupons
+        const couponsResp = await API.getCoupons();
+        if (couponsResp.success && couponsResp.data) {
+          renderCoupons(couponsResp.data || []);
+        }
+
+        // Load Redemptions
+        const redemptionsResp = await API.getMyRedemptions();
+        if (redemptionsResp.success && redemptionsResp.data) {
+          renderVouchers(redemptionsResp.data || []);
+        }
+
+      } catch (err) {
+        showToast('Error loading wallet data: ' + err.message, 'error');
+      }
+    }
+
+    function renderCoupons(coupons) {
+      const container = document.getElementById('coupons-grid');
+      if (coupons.length === 0) {
+        container.innerHTML = '<div style="text-align: center; grid-column: 1 / -1; padding: 2rem;">No coupons available.</div>';
+        return;
+      }
+
+      container.innerHTML = coupons.map(c => {
+        const canRedeem = currentBalance >= c.pointsRequired;
+        return `
+          <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; border: 1.5px solid var(--border-color);">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+                <span class="badge badge-points" style="font-size: 0.82rem;">${c.category}</span>
+                <span style="font-size: 1.25rem; font-weight: 800; color: var(--accent-gold);">${c.pointsRequired} pts</span>
+              </div>
+              <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--primary-dark);">${escapeHtml(c.title)}</h3>
+              <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 1.25rem;">${escapeHtml(c.description)}</p>
+            </div>
+
+            <button type="button" class="btn ${canRedeem ? 'btn-gold' : 'btn-secondary'} btn-sm" 
+                    style="width: 100%;" ${canRedeem ? '' : 'disabled'} onclick="redeemCoupon(${c.id}, '${escapeHtml(c.title)}')">
+              ${canRedeem ? '🎁 Redeem with Points' : `Need ${c.pointsRequired - currentBalance} more pts`}
+            </button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function redeemCoupon(couponId, title) {
+      if (!confirm(`Redeem "${title}"? Points will be deducted immediately.`)) {
+        return;
+      }
+
+      try {
+        const resp = await API.redeemCoupon(couponId);
+        if (resp.success && resp.data) {
+          showToast(`Success! Your voucher code is: ${resp.data.redemptionCode}`, 'success');
+          loadWallet(); // refresh balance and tables
+        }
+      } catch (err) {
+        showToast('Redemption failed: ' + err.message, 'error');
+      }
+    }
+
+    function renderVouchers(vouchers) {
+      const tbody = document.getElementById('vouchers-table-body');
+      if (vouchers.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">No vouchers redeemed yet.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = vouchers.map(v => `
+        <tr>
+          <td><code style="font-size: 1rem; font-weight: 800; color: var(--primary); background: var(--primary-subtle); padding: 0.25rem 0.5rem; border-radius: 4px;">${v.redemptionCode}</code></td>
+          <td><strong>${escapeHtml(v.coupon.title)}</strong></td>
+          <td><span class="badge badge-points">-${v.pointsDeducted} pts</span></td>
+          <td style="font-size: 0.85rem; color: var(--text-muted);">${formatDate(v.redeemedAt)}</td>
+          <td style="font-size: 0.85rem; color: var(--text-muted);">${formatDate(v.validUntil)}</td>
+          <td><span class="badge badge-accepted">Active</span></td>
+        </tr>
+      `).join('');
+    }
+
+    function renderTransactions(txs) {
+      const tbody = document.getElementById('tx-table-body');
+      if (txs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-muted);">No points transactions recorded yet.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = txs.map(t => {
+        const isEarned = t.points > 0;
+        return `
+          <tr>
+            <td>#${t.id}</td>
+            <td>
+              <span class="badge ${isEarned ? 'badge-accepted' : 'badge-points'}">
+                ${isEarned ? 'Earned' : 'Redeemed'}
+              </span>
+            </td>
+            <td>${escapeHtml(t.description)}</td>
+            <td style="font-weight: 800; color: ${isEarned ? 'var(--status-accepted)' : '#b91c1c'};">
+              ${isEarned ? '+' + t.points : t.points} pts
+            </td>
+            <td style="font-weight: 700;">${t.balanceAfter} pts</td>
+            <td style="font-size: 0.85rem; color: var(--text-muted);">${formatDate(t.createdAt)}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    loadWallet();
+  </script>
+</body>
+</html>

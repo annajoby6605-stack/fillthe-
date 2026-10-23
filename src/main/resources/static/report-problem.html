@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report a Road Problem – Fill the Pockets</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/villager-dashboard.html" class="brand">
+        <div class="brand-icon">🛣️</div>
+        <div>
+          <div>Fill the Pockets</div>
+          <span class="brand-subtitle">Report Road Damage</span>
+        </div>
+      </a>
+      <div class="nav-actions">
+        <a href="/villager-dashboard.html" class="btn btn-secondary btn-sm">← Back to Dashboard</a>
+        <a href="/wallet-rewards.html" class="btn btn-gold btn-sm">🎁 My Rewards Wallet</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="section" style="max-width: 800px;">
+    <div class="card" style="border-top: 4px solid var(--primary);">
+      <div class="card-header">
+        <div>
+          <h1 class="card-title" style="font-size: 1.6rem;">Report a Road Problem or Pothole</h1>
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.25rem;">
+            Upload a road photograph for AI verification. AI-approved images wait for employee review; exactly 20 points are credited only after employee approval.
+          </p>
+        </div>
+      </div>
+
+      <div id="form-error" style="display: none; background: #fee2e2; color: #b91c1c; padding: 0.85rem 1rem; border-radius: var(--radius-md); font-size: 0.9rem; margin-bottom: 1.5rem;"></div>
+
+      <form id="report-form">
+        <!-- Photo Upload & Camera Section -->
+        <div class="form-group">
+          <label class="form-label">
+            Photograph of Road Defect <span style="color: #dc2626;">*</span>
+          </label>
+
+          <!-- Dual Source Selector Buttons -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 0.85rem;" id="photo-choice-bar">
+            <button type="button" class="btn btn-primary" onclick="triggerCameraCapture()" style="justify-content: center;">
+              📸 Capture with Camera
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="document.getElementById('image-input-gallery').click()" style="justify-content: center;">
+              🖼️ Upload from Gallery
+            </button>
+          </div>
+
+          <!-- Hidden inputs for file selection and direct mobile camera capture -->
+          <input type="file" id="image-input-gallery" accept="image/jpeg,image/png,image/webp" style="display: none;">
+          <input type="file" id="image-input-camera" accept="image/*" capture="environment" style="display: none;">
+
+          <!-- Image Preview Card (shown once image is selected) -->
+          <div id="preview-container" style="display: none; border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; background: var(--bg-cream); text-align: center;">
+            <img id="image-preview" src="" alt="Road Defect Preview" style="max-width: 100%; max-height: 280px; border-radius: var(--radius-md); object-fit: contain; margin-bottom: 0.75rem; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color);">
+            <div id="image-meta" style="font-size: 0.85rem; font-weight: 600; color: var(--primary-dark); margin-bottom: 0.85rem;"></div>
+            <div style="display: flex; justify-content: center; gap: 0.75rem;">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="retakePhoto()">🔄 Retake / Change</button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="removePhoto()" style="color: #b91c1c; border-color: #fca5a5;">🗑️ Remove Photo</button>
+            </div>
+          </div>
+
+          <!-- Empty dropzone placeholder (shown when no image selected) -->
+          <div id="empty-dropzone" style="border: 2px dashed var(--border-color); border-radius: var(--radius-lg); padding: 2rem 1.5rem; text-align: center; background: var(--bg-cream); cursor: pointer;" onclick="document.getElementById('image-input-gallery').click()">
+            <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">📸</div>
+            <strong>Click to upload or use the buttons above to capture with camera</strong>
+            <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.35rem;">Supports JPEG, PNG, WEBP (Max 10MB)</div>
+          </div>
+          <div class="form-help">Ensure clear daytime lighting of the road defect, pothole cavity, or cracked asphalt.</div>
+        </div>
+
+        <!-- GPS Coordinates Capture -->
+        <div class="form-group" style="background: var(--bg-cream-dark); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <label class="form-label" style="margin-bottom: 0;">📍 GPS Road Location Coordinates <span style="color: #dc2626;">*</span></label>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-gps" onclick="fetchGPSLocation()">
+              📡 Capture Current GPS Location
+            </button>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div>
+              <label class="form-label" for="latitude" style="font-size: 0.8rem;">Latitude</label>
+              <input type="number" step="any" id="latitude" class="form-input" placeholder="e.g. 10.8505" required>
+            </div>
+            <div>
+              <label class="form-label" for="longitude" style="font-size: 0.8rem;">Longitude</label>
+              <input type="number" step="any" id="longitude" class="form-input" placeholder="e.g. 76.2711" required>
+            </div>
+          </div>
+          <div id="gps-status" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;">
+            Click the GPS button to use your device's live coordinates, or enter them manually.
+          </div>
+        </div>
+
+        <!-- Road Name & Area -->
+        <div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label" for="roadName">Road / Street Name <span style="color: #dc2626;">*</span></label>
+            <input type="text" id="roadName" class="form-input" placeholder="e.g. Market Junction Main Road" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="villageArea">Village / Ward / Area <span style="color: #dc2626;">*</span></label>
+            <input type="text" id="villageArea" class="form-input" placeholder="e.g. Ward 4, Sundarapuram" required>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+          <label class="form-label" for="description">Problem Description</label>
+          <textarea id="description" class="form-textarea" placeholder="Describe the size, depth, or safety hazard (e.g. Deep pothole near school bus stop causing severe traffic slowdown)."></textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="submit-btn" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 0.5rem;">
+            📤 Submit for AI Verification
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <!-- Camera Live Capture Modal -->
+  <div id="camera-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 520px; text-align: center;">
+      <div class="modal-header">
+        <h3 class="modal-title">Live Camera Capture</h3>
+        <button type="button" class="modal-close" onclick="closeCameraModal()">&times;</button>
+      </div>
+      <div style="position: relative; background: #000000; border-radius: var(--radius-md); overflow: hidden; margin-bottom: 1rem; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center;">
+        <video id="camera-video" autoplay playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
+        <canvas id="camera-canvas" style="display: none;"></canvas>
+      </div>
+      <div style="display: flex; gap: 0.75rem;">
+        <button type="button" class="btn btn-secondary" onclick="closeCameraModal()" style="flex: 1;">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="captureSnapshot()" style="flex: 2;">📸 Snap Photo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Verification Result Modal -->
+  <div id="ai-result-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 580px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Automatic AI Photo Verification</h3>
+        <button type="button" class="modal-close" onclick="closeAiModal()">&times;</button>
+      </div>
+
+      <!-- Result Banner -->
+      <div id="ai-banner" style="padding: 1.5rem; border-radius: var(--radius-md); text-align: center; margin-bottom: 1.25rem;">
+        <div id="ai-icon" style="font-size: 3rem; margin-bottom: 0.5rem;">🤖</div>
+        <h2 id="ai-status-title" style="font-size: 1.4rem; font-weight: 800; margin-bottom: 0.25rem;">AI Evaluating...</h2>
+        <div id="ai-status-subtitle" style="font-size: 0.95rem;">Please wait</div>
+      </div>
+
+      <div style="background: var(--bg-cream); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+          <strong style="font-size: 0.88rem;">AI Review Information:</strong>
+          <span id="ai-confidence-badge" class="badge badge-points" style="font-size: 0.85rem;">0%</span>
+        </div>
+        <div style="background: #e2ded6; height: 10px; border-radius: var(--radius-full); overflow: hidden; margin-bottom: 1rem;">
+          <div id="ai-confidence-bar" style="height: 100%; width: 0%; background: var(--primary); transition: width 0.6s ease;"></div>
+        </div>
+
+        <div style="font-size: 0.88rem; line-height: 1.5; color: var(--text-main);" id="ai-explanation-text">
+          -
+        </div>
+
+        <div style="margin-top: 0.75rem; font-size: 0.8rem; color: var(--text-muted);" id="ai-inference-meta">
+          Model: MobileNetV2 Deep Neural Vision • Inference latency: 0ms
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 1rem;">
+        <a href="/villager-dashboard.html" class="btn btn-secondary" style="flex: 1;">View Dashboard</a>
+        <a href="/wallet-rewards.html" class="btn btn-gold" id="btn-view-wallet" style="flex: 1;">Check Rewards Wallet</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    // Protect page
+    const user = API.getUser();
+    if (!user || user.role !== 'VILLAGER') {
+      window.location.href = '/villager-login.html';
+    }
+
+    let selectedImageFile = null;
+    let cameraMediaStream = null;
+
+    // Trigger Camera
+    async function triggerCameraCapture() {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        try {
+          cameraMediaStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: { ideal: 'environment' } }
+          });
+          const video = document.getElementById('camera-video');
+          video.srcObject = cameraMediaStream;
+          document.getElementById('camera-modal').classList.add('active');
+        } catch (err) {
+          console.warn('getUserMedia failed or denied, using mobile camera capture:', err);
+          document.getElementById('image-input-camera').click();
+        }
+      } else {
+        document.getElementById('image-input-camera').click();
+      }
+    }
+
+    function closeCameraModal() {
+      document.getElementById('camera-modal').classList.remove('active');
+      if (cameraMediaStream) {
+        cameraMediaStream.getTracks().forEach(track => track.stop());
+        cameraMediaStream = null;
+      }
+    }
+
+    function captureSnapshot() {
+      const video = document.getElementById('camera-video');
+      const canvas = document.getElementById('camera-canvas');
+      canvas.width = video.videoWidth || 640;
+      canvas.height = video.videoHeight || 480;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const file = new File([blob], `road_defect_${Date.now()}.jpg`, { type: 'image/jpeg' });
+          handleSelectedFile(file);
+          closeCameraModal();
+        }
+      }, 'image/jpeg', 0.92);
+    }
+
+    // Gallery Input Listener
+    document.getElementById('image-input-gallery').addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        handleSelectedFile(e.target.files[0]);
+      }
+    });
+
+    // Mobile Camera Input Listener
+    document.getElementById('image-input-camera').addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        handleSelectedFile(e.target.files[0]);
+      }
+    });
+
+    function handleSelectedFile(file) {
+      if (file.size > 10 * 1024 * 1024) {
+        showToast('Image size exceeds 10MB limit!', 'error');
+        return;
+      }
+      selectedImageFile = file;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        document.getElementById('image-preview').src = e.target.result;
+        document.getElementById('preview-container').style.display = 'block';
+        document.getElementById('empty-dropzone').style.display = 'none';
+        document.getElementById('image-meta').textContent = `${file.name} • ${(file.size / 1024).toFixed(1)} KB`;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function retakePhoto() {
+      triggerCameraCapture();
+    }
+
+    function removePhoto() {
+      selectedImageFile = null;
+      document.getElementById('image-input-gallery').value = '';
+      document.getElementById('image-input-camera').value = '';
+      document.getElementById('image-preview').src = '';
+      document.getElementById('preview-container').style.display = 'none';
+      document.getElementById('empty-dropzone').style.display = 'block';
+    }
+
+    // GPS Geolocation Handler
+    function fetchGPSLocation() {
+      const status = document.getElementById('gps-status');
+      const btn = document.getElementById('btn-gps');
+
+      if (!navigator.geolocation) {
+        status.textContent = 'Geolocation is not supported by your browser. Please enter coordinates manually.';
+        status.style.color = '#dc2626';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Locating...';
+      status.textContent = 'Acquiring satellite GPS coordinates...';
+      status.style.color = 'var(--text-muted)';
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          document.getElementById('latitude').value = position.coords.latitude.toFixed(6);
+          document.getElementById('longitude').value = position.coords.longitude.toFixed(6);
+          status.innerHTML = `✓ GPS coordinates acquired (Accuracy: ±${Math.round(position.coords.accuracy)}m)`;
+          status.style.color = 'var(--status-accepted)';
+          btn.disabled = false;
+          btn.textContent = '📡 GPS Captured';
+        },
+        (error) => {
+          btn.disabled = false;
+          btn.textContent = '📡 Retry GPS';
+          status.textContent = 'Could not acquire GPS: ' + error.message + '. Please enter coordinates manually.';
+          status.style.color = '#dc2626';
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    }
+
+    // Form submission
+    const form = document.getElementById('report-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const errorBox = document.getElementById('form-error');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorBox.style.display = 'none';
+
+      if (!selectedImageFile) {
+        errorBox.textContent = 'Please choose or capture a photograph of the road damage.';
+        errorBox.style.display = 'block';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `
+        <span style="display: inline-block; animation: spin 1s infinite linear;">⚙️</span>
+        Saving your report for AI verification...
+      `;
+
+      const formData = new FormData();
+      formData.append('image', selectedImageFile);
+      formData.append('roadName', document.getElementById('roadName').value.trim());
+      formData.append('villageArea', document.getElementById('villageArea').value.trim());
+      formData.append('description', document.getElementById('description').value.trim());
+      formData.append('latitude', document.getElementById('latitude').value);
+      formData.append('longitude', document.getElementById('longitude').value);
+
+      try {
+        const resp = await API.submitRoadReport(formData);
+        if (resp.success && resp.data) {
+          showAiResultModal(resp.data);
+        }
+      } catch (err) {
+        errorBox.textContent = err.message || 'Submission failed. Please try again.';
+        errorBox.style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.textContent = '📤 Submit for Verification';
+      }
+    });
+
+    function showAiResultModal(data) {
+      const banner = document.getElementById('ai-banner');
+      const icon = document.getElementById('ai-icon');
+      const title = document.getElementById('ai-status-title');
+      const subtitle = document.getElementById('ai-status-subtitle');
+      const confBadge = document.getElementById('ai-confidence-badge');
+      const confBar = document.getElementById('ai-confidence-bar');
+      const expl = document.getElementById('ai-explanation-text');
+      const walletBtn = document.getElementById('btn-view-wallet');
+
+      const confPct = Math.round((data.aiConfidenceScore || 0) * 100);
+      confBadge.textContent = `${confPct}% Confidence`;
+      confBar.style.width = `${confPct}%`;
+      expl.textContent = data.aiExplanation || 'Image evaluated.';
+
+      if (data.status === 'AI_REJECTED' || data.status === 'REJECTED_UNRELATED' || data.status === 'REJECTED_DUPLICATE') {
+        banner.style.background = '#fee2e2';
+        banner.style.color = '#991b1b';
+        icon.textContent = '✕';
+        title.textContent = 'AI Image Screening: Rejected';
+        subtitle.textContent = `Report ${data.reportNumber} did not pass AI road-damage criteria. No points were awarded.`;
+        confBar.style.background = '#dc2626';
+      } else {
+        banner.style.background = '#fff7d6';
+        banner.style.color = '#805500';
+        icon.textContent = '⏳';
+        title.textContent = 'AI Verified — Pending Employee Verification';
+        subtitle.textContent = `Report ${data.reportNumber} has passed Stage 1 AI image screening (${confPct}% confidence). It is now awaiting Stage 2 manual verification by an authorized Panchayat employee. Exactly 20 points will be awarded once an employee approves your report.`;
+        confBar.style.background = '#d97706';
+      }
+      walletBtn.style.display = 'none';
+
+      document.getElementById('ai-result-modal').classList.add('active');
+    }
+
+    function closeAiModal() {
+      document.getElementById('ai-result-modal').classList.remove('active');
+      window.location.href = '/villager-dashboard.html';
+    }
+  </script>
+</body>
+</html>

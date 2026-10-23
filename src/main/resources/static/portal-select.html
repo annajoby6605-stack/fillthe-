@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Portal – Fill the Pockets</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body style="background: linear-gradient(180deg, #fbf9f5 0%, #f4efe6 100%); min-height: 100vh;">
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/index.html" class="brand">
+        <div class="brand-icon">🛣️</div>
+        <div>
+          <div>Fill the Pockets</div>
+          <span class="brand-subtitle">Smart Village Road System</span>
+        </div>
+      </a>
+      <div class="nav-actions">
+        <a href="/index.html" class="btn btn-secondary btn-sm">← Back to Home</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Portal Selection Main Section -->
+  <main class="section" style="max-width: 1080px; margin: 2rem auto; padding: 1.5rem;">
+    <div style="text-align: center; max-width: 640px; margin: 0 auto 3rem auto;">
+      <span class="badge badge-points" style="font-size: 0.82rem; padding: 0.4rem 1rem; margin-bottom: 0.85rem;">
+        🏛️ Gram Panchayat Public Infrastructure Portal
+      </span>
+      <h1 style="font-size: 2.4rem; font-weight: 800; color: var(--primary-dark); line-height: 1.25; margin-bottom: 0.85rem;">
+        Choose Your Access Portal
+      </h1>
+      <p style="font-size: 1.05rem; color: var(--text-muted);">
+        Select whether you are a village citizen, Panchayat employee, or administrator.
+      </p>
+    </div>
+
+    <!-- Dual Option Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; align-items: stretch;">
+
+      <!-- Option A: Villager Portal -->
+      <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; padding: 2.25rem; border-top: 5px solid var(--primary); transition: transform 0.2s ease, box-shadow 0.2s ease; position: relative;">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+            <div style="width: 58px; height: 58px; border-radius: var(--radius-lg); background: var(--primary-subtle); display: flex; align-items: center; justify-content: center; font-size: 1.9rem;">
+              🧑‍🌾
+            </div>
+            <span class="badge badge-accepted" style="font-size: 0.8rem;">Citizen Access</span>
+          </div>
+
+          <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 0.5rem;">
+            Villager Portal
+          </h2>
+          <p style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;">
+            For village residents who want to report damaged roads, submit photos for review, earn points after approval, and track repair progress.
+          </p>
+
+          <ul style="list-style: none; padding: 0; margin-bottom: 2rem; font-size: 0.9rem; color: var(--text-main);">
+            <li style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem;">
+              <span style="color: var(--primary); font-weight: 800;">✓</span> 📸 Snap road defect photos with GPS
+            </li>
+            <li style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem;">
+              <span style="color: var(--primary); font-weight: 800;">✓</span> 🤖 Automated AI image verification
+            </li>
+            <li style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem;">
+              <span style="color: var(--primary); font-weight: 800;">✓</span> 🎁 Earn +20 points after employee verification
+            </li>
+            <li style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="color: var(--primary); font-weight: 800;">✓</span> 🎫 Redeem village cooperative vouchers
+            </li>
+          </ul>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+          <a href="/villager-register.html" class="btn btn-primary btn-lg" style="text-align: center; justify-content: center;">
+            Sign Up
+          </a>
+          <a href="/villager-login.html" class="btn btn-secondary btn-lg" style="text-align: center; justify-content: center;">
+            Log In
+          </a>
+        </div>
+      </div>
+
+      <!-- Option B: Panchayat Employee Portal -->
+      <div class="card" style="display: flex; flex-direction: column; justify-content: space-between; padding: 2.25rem; border-top: 5px solid var(--accent-gold); transition: transform 0.2s ease, box-shadow 0.2s ease; position: relative;">
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem;">
+            <div style="width: 58px; height: 58px; border-radius: var(--radius-lg); background: var(--accent-gold-subtle); display: flex; align-items: center; justify-content: center; font-size: 1.9rem;">
+              🏛️
+            </div>
+            <span class="badge badge-points" style="font-size: 0.8rem;">Staff Only</span>
+          </div>
+
+          <h2 style="font-size: 1.6rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 0.5rem;">
+            Panchayat Employee Portal
+          </h2>
+          <p style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;">
+            For authorized Gram Panchayat engineers, road overseers, and village administrative staff to manage road-repair progress and log physical maintenance.
+          </p>
+
+          <ul style="list-style: none; padding: 0; margin-bottom: 2rem; font-size: 0.9rem; color: var(--text-main);">
+            <li style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem;">
+              <span style="color: var(--accent-gold); font-weight: 800;">✓</span> 🔐 Secure Two-Factor Authentication (2FA)
+            </li>
+            <li style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem;">
+              <span style="color: var(--accent-gold); font-weight: 800;">✓</span> 🚜 Update repair status (Pending → Resolved)
+            </li>
+            <li style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem;">
+              <span style="color: var(--accent-gold); font-weight: 800;">✓</span> 📝 Complete institutional audit logging
+            </li>
+            <li style="display: flex; align-items: center; gap: 0.5rem;">
+              <span style="color: var(--accent-gold); font-weight: 800;">✓</span> 🛡️ Strict role-based backend protection
+            </li>
+          </ul>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 0.85rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+          <a href="/employee-register.html" class="btn btn-secondary btn-lg" style="text-align: center; justify-content: center; font-size: 0.9rem; padding: 0.75rem 0.6rem;">
+            Sign Up / Request
+          </a>
+          <a href="/employee-login.html" class="btn btn-gold btn-lg" style="text-align: center; justify-content: center;">
+            Log In
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <p style="margin-top: 1.5rem; text-align: center; color: var(--text-muted); font-size: 0.88rem;">
+      Administrator? <a href="/admin-login.html" style="color: var(--primary); font-weight: 700;">Sign in to review reports</a>
+    </p>
+
+    <!-- Security & Institutional Note -->
+    <div style="margin-top: 3rem; background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1.25rem 1.75rem; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+      🔒 <strong>Role Segregation Policy:</strong> Citizen accounts cannot access employee dashboards or update repair statuses. Employee accounts are protected by multi-factor authentication and require administrator verification.
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer" style="margin-top: auto;">
+    <div class="footer-container" style="justify-content: center; text-align: center;">
+      <div style="font-size: 0.85rem; color: var(--text-light);">
+        &copy; 2026 Fill the Pockets – Smart Village Road Reporting and Rewards System. Built for Gram Panchayat Public Works.
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,35 @@
+# Compiled class files and Maven target
+target/
+*.class
+
+# Package files
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Uploads and temporary user images
+uploads/
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+.classpath
+.project
+.settings/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Logs and error dumps
+*.log
+startup-error.txt
+
+# Environment files
+.env

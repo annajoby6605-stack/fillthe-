@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Villager Dashboard – Fill the Pockets</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/villager-dashboard.html" class="brand">
+        <div class="brand-icon">🛣️</div>
+        <div>
+          <div>Fill the Pockets</div>
+          <span class="brand-subtitle">Villager Citizen Portal</span>
+        </div>
+      </a>
+      <div class="nav-actions">
+        <a href="/report-problem.html" class="btn btn-primary btn-sm">📸 Report Road Problem</a>
+        <a href="/wallet-rewards.html" class="btn btn-gold btn-sm">🎁 My Rewards Wallet</a>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="API.logout()">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Dashboard Main Content -->
+  <main class="section">
+    <!-- Welcome Header & Points Badge -->
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
+      <div>
+        <h1 style="font-size: 2rem; font-weight: 800; color: var(--primary-dark);">
+          Namaste, <span id="user-greeting">Citizen</span> 👋
+        </h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+          Track your road-damage submissions, AI photo verifications, and Gram Panchayat repair progress.
+        </p>
+      </div>
+
+      <div style="background: linear-gradient(135deg, #1b4332, #2d6a4f); color: #ffffff; padding: 1rem 1.75rem; border-radius: var(--radius-lg); display: flex; align-items: center; gap: 1.25rem; box-shadow: var(--shadow-md);">
+        <div style="font-size: 2.2rem;">🪙</div>
+        <div>
+          <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent-gold-light); font-weight: 700;">Points Balance</div>
+          <div style="font-size: 1.8rem; font-weight: 800;" id="user-points">0 pts</div>
+        </div>
+        <a href="/wallet-rewards.html" class="btn btn-gold btn-sm" style="margin-left: 0.5rem;">Redeem</a>
+      </div>
+    </div>
+
+    <!-- Eligibility Notification Banner -->
+    <div id="reward-eligibility-banner" style="display: none; background: #ecfdf5; border: 1.5px solid #a7f3d0; border-radius: var(--radius-md); padding: 1rem 1.25rem; margin-bottom: 2rem; align-items: center; justify-content: space-between;">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <span style="font-size: 1.4rem;">🎉</span>
+        <div>
+          <strong style="color: #065f46;">Reward Eligible!</strong>
+          <div style="font-size: 0.88rem; color: #047857;">You have enough points to redeem village cooperative store coupons and farming discounts.</div>
+        </div>
+      </div>
+      <a href="/wallet-rewards.html" class="btn btn-primary btn-sm">View Available Coupons →</a>
+    </div>
+
+    <!-- Metric Summary Cards -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.25rem; margin-bottom: 2rem;">
+      <div class="card" style="padding: 1.25rem; border-left: 4px solid var(--primary);">
+        <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Total Submitted</div>
+        <div style="font-size: 1.8rem; font-weight: 800; color: var(--primary-dark); margin-top: 0.25rem;" id="count-total">0</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">All road submissions</div>
+      </div>
+
+      <div class="card" style="padding: 1.25rem; border-left: 4px solid var(--status-pending);">
+        <div style="font-size: 0.78rem; font-weight: 700; color: var(--status-pending); text-transform: uppercase;">Pending Review</div>
+        <div style="font-size: 1.8rem; font-weight: 800; color: var(--status-pending); margin-top: 0.25rem;" id="count-pending">0</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">Awaiting administrator decision</div>
+      </div>
+
+      <div class="card" style="padding: 1.25rem; border-left: 4px solid var(--status-inprogress);">
+        <div style="font-size: 0.78rem; font-weight: 700; color: var(--status-inprogress); text-transform: uppercase;">In Progress</div>
+        <div style="font-size: 1.8rem; font-weight: 800; color: var(--status-inprogress); margin-top: 0.25rem;" id="count-inprogress">0</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">Active roadwork underway</div>
+      </div>
+
+      <div class="card" style="padding: 1.25rem; border-left: 4px solid #047857;">
+        <div style="font-size: 0.78rem; font-weight: 700; color: #047857; text-transform: uppercase;">Repairs Resolved</div>
+        <div style="font-size: 1.8rem; font-weight: 800; color: #047857; margin-top: 0.25rem;" id="count-resolved">0</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">Fully repaired roads</div>
+      </div>
+
+      <div class="card" style="padding: 1.25rem; border-left: 4px solid var(--accent-gold);">
+        <div style="font-size: 0.78rem; font-weight: 700; color: var(--accent-gold); text-transform: uppercase;">Total Points Earned</div>
+        <div style="font-size: 1.8rem; font-weight: 800; color: var(--accent-gold); margin-top: 0.25rem;" id="count-points">0 pts</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">Cumulative reward credits</div>
+      </div>
+    </div>
+
+    <!-- Reporting & Repair Activity Chart Box -->
+    <div class="activity-chart-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem;">
+        <div>
+          <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--primary-dark); margin-bottom: 0.2rem;">
+            📊 Road Reporting & Resolution Activity
+          </h3>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin: 0;">
+            Visual breakdown of your road defect reports and Gram Panchayat repair lifecycle.
+          </p>
+        </div>
+        <span class="badge badge-points" style="font-size: 0.8rem;" id="chart-total-badge">0 Reports Logged</span>
+      </div>
+
+      <div class="chart-container" id="activity-chart">
+        <div class="chart-bar-group">
+          <div class="chart-val" id="chart-val-total" style="color: var(--primary);">0</div>
+          <div class="chart-bar" id="bar-total" style="height: 10%; background: linear-gradient(180deg, var(--primary-light), var(--primary));"></div>
+          <div class="chart-label">Total</div>
+        </div>
+        <div class="chart-bar-group">
+          <div class="chart-val" id="chart-val-accepted" style="color: #047857;">0</div>
+          <div class="chart-bar" id="bar-accepted" style="height: 10%; background: linear-gradient(180deg, #10b981, #047857);"></div>
+          <div class="chart-label">Accepted</div>
+        </div>
+        <div class="chart-bar-group">
+          <div class="chart-val" id="chart-val-pending" style="color: #d97706;">0</div>
+          <div class="chart-bar" id="bar-pending" style="height: 10%; background: linear-gradient(180deg, #fbbf24, #d97706);"></div>
+          <div class="chart-label">Pending</div>
+        </div>
+        <div class="chart-bar-group">
+          <div class="chart-val" id="chart-val-inprogress" style="color: #2563eb;">0</div>
+          <div class="chart-bar" id="bar-inprogress" style="height: 10%; background: linear-gradient(180deg, #60a5fa, #2563eb);"></div>
+          <div class="chart-label">In Progress</div>
+        </div>
+        <div class="chart-bar-group">
+          <div class="chart-val" id="chart-val-resolved" style="color: #059669;">0</div>
+          <div class="chart-bar" id="bar-resolved" style="height: 10%; background: linear-gradient(180deg, #34d399, #059669);"></div>
+          <div class="chart-label">Resolved</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Road Reports -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h2 class="card-title">My Road Damage Reports</h2>
+          <span style="font-size: 0.85rem; color: var(--text-muted);">Real-time status of road problems reported by your account</span>
+        </div>
+        <a href="/report-problem.html" class="btn btn-primary btn-sm">➕ Report New Road Defect</a>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Report #</th>
+              <th>Photo</th>
+              <th>Road & Area</th>
+              <th>GPS Coordinates</th>
+              <th>AI Verification</th>
+              <th>Employee Verification</th>
+              <th>Points Awarded</th>
+              <th>Panchayat Repair Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="reports-table-body">
+            <tr>
+              <td colspan="9" style="text-align: center; padding: 2rem; color: var(--text-muted);">Loading your reports...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- Photo View Modal -->
+  <div id="photo-modal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 600px; text-align: center;">
+      <div class="modal-header">
+        <h3 class="modal-title" id="photo-modal-title">Road Defect Photograph</h3>
+        <button type="button" class="modal-close" onclick="closePhotoModal()">&times;</button>
+      </div>
+      <img id="modal-img-preview" src="" alt="Road Damage" style="max-width: 100%; max-height: 400px; border-radius: var(--radius-md); object-fit: contain; margin-bottom: 1rem; border: 1px solid var(--border-color);">
+      <div id="photo-ai-desc" style="font-size: 0.9rem; text-align: left; background: var(--bg-cream); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);"></div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script>
+    const reportImageUrls = new Map();
+    const villagerReportsById = new Map();
+
+    // Protect page
+    const user = API.getUser();
+    if (!user || user.role !== 'VILLAGER') {
+      window.location.href = '/villager-login.html';
+    }
+
+    document.getElementById('user-greeting').textContent = user.fullName || 'Citizen';
+
+    async function loadDashboard() {
+      try {
+        const resp = await API.getVillagerDashboard();
+        if (resp.success && resp.data) {
+          const d = resp.data;
+          document.getElementById('user-points').textContent = `${d.pointsBalance || 0} pts`;
+          document.getElementById('count-total').textContent = d.totalSubmitted || 0;
+          document.getElementById('count-pending').textContent = d.pendingReports || 0;
+          document.getElementById('count-inprogress').textContent = d.inProgressReports || 0;
+          document.getElementById('count-resolved').textContent = d.resolvedReports || 0;
+          const totalEarned = (d.totalPointsEarned != null) ? d.totalPointsEarned : ((d.totalAccepted || 0) * 20);
+          document.getElementById('count-points').textContent = `${totalEarned} pts`;
+
+          // Update chart values and animated bars
+          const total = d.totalSubmitted || 0;
+          const accepted = d.totalAccepted || 0;
+          const pending = d.pendingReports || 0;
+          const inProgress = d.inProgressReports || 0;
+          const resolved = d.resolvedReports || 0;
+
+          document.getElementById('chart-total-badge').textContent = `${total} Reports Logged`;
+          document.getElementById('chart-val-total').textContent = total;
+          document.getElementById('chart-val-accepted').textContent = accepted;
+          document.getElementById('chart-val-pending').textContent = pending;
+          document.getElementById('chart-val-inprogress').textContent = inProgress;
+          document.getElementById('chart-val-resolved').textContent = resolved;
+
+          const maxVal = Math.max(total, 1);
+          document.getElementById('bar-total').style.height = `${Math.max(12, Math.round((total / maxVal) * 100))}%`;
+          document.getElementById('bar-accepted').style.height = `${accepted > 0 ? Math.max(12, Math.round((accepted / maxVal) * 100)) : 8}%`;
+          document.getElementById('bar-pending').style.height = `${pending > 0 ? Math.max(12, Math.round((pending / maxVal) * 100)) : 8}%`;
+          document.getElementById('bar-inprogress').style.height = `${inProgress > 0 ? Math.max(12, Math.round((inProgress / maxVal) * 100)) : 8}%`;
+          document.getElementById('bar-resolved').style.height = `${resolved > 0 ? Math.max(12, Math.round((resolved / maxVal) * 100)) : 8}%`;
+
+          if (d.eligibleForRewards) {
+            document.getElementById('reward-eligibility-banner').style.display = 'flex';
+          }
+
+          renderReports(d.recentReports || []);
+        }
+      } catch (err) {
+        showToast('Error loading dashboard: ' + err.message, 'error');
+      }
+    }
+
+    function renderReports(reports) {
+      const tbody = document.getElementById('reports-table-body');
+      reportImageUrls.forEach(url => URL.revokeObjectURL(url));
+      reportImageUrls.clear();
+      villagerReportsById.clear();
+      if (reports.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="8" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+              You haven't submitted any road damage reports yet.<br>
+              <a href="/report-problem.html" class="btn btn-primary btn-sm" style="margin-top: 0.75rem;">Report a Road Problem</a>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = reports.map(r => {
+        villagerReportsById.set(String(r.id), r);
+
+        let aiBadge = '';
+        if (r.aiCategory === 'ROAD_DAMAGE' || r.status === 'PENDING_EMPLOYEE_VERIFICATION' || r.status === 'EMPLOYEE_APPROVED' || r.status === 'EMPLOYEE_REJECTED' || r.status === 'ACCEPTED') {
+          aiBadge = `<span class="badge badge-accepted">✓ AI Passed</span>${r.aiConfidenceScore ? `<div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">${(r.aiConfidenceScore * 100).toFixed(1)}% Score</div>` : ''}`;
+        } else if (r.status === 'REJECTED_DUPLICATE') {
+          aiBadge = `<span class="badge badge-rejected">✕ Duplicate</span>`;
+        } else {
+          aiBadge = `<span class="badge badge-rejected">✕ AI Rejected</span>${r.aiConfidenceScore ? `<div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">${(r.aiConfidenceScore * 100).toFixed(1)}%</div>` : ''}`;
+        }
+
+        let empStatusBadge = '';
+        if (r.status === 'EMPLOYEE_APPROVED' || r.status === 'ACCEPTED') {
+          empStatusBadge = `<span class="badge badge-accepted">✓ Verified & Approved</span>${r.verifiedByEmployeeName ? `<div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">By: ${escapeHtml(r.verifiedByEmployeeName)}</div>` : ''}`;
+        } else if (r.status === 'PENDING_EMPLOYEE_VERIFICATION' || r.status === 'PENDING_ADMIN_APPROVAL' || r.status === 'NEEDS_REVIEW') {
+          empStatusBadge = `<span class="badge badge-pending">⏳ AI Verified — Pending Employee Verification</span><div style="font-size: 0.74rem; color: var(--text-muted); margin-top: 0.2rem;">Awaiting Panchayat Staff Review</div>`;
+        } else if (r.status === 'EMPLOYEE_REJECTED') {
+          empStatusBadge = `<span class="badge badge-rejected">✕ Rejected</span><div style="font-size: 0.75rem; color: #b91c1c; margin-top: 0.2rem;">${escapeHtml(r.rejectionReason || 'No reason provided')}</div>`;
+        } else {
+          empStatusBadge = `<span style="color: var(--text-muted); font-size: 0.8rem;">N/A (AI Rejected)</span>`;
+        }
+
+        let repairBadge = '';
+        if (r.repairStatus === 'RESOLVED') {
+          repairBadge = `<span class="badge badge-resolved">🚜 Resolved</span>`;
+        } else if (r.repairStatus === 'IN_PROGRESS') {
+          repairBadge = `<span class="badge badge-inprogress">🔧 In Progress</span>`;
+        } else {
+          repairBadge = `<span class="badge badge-pending">⏳ Pending</span>`;
+        }
+
+        return `
+          <tr>
+            <td><strong>${r.reportNumber}</strong></td>
+            <td>
+              <span id="villager-image-loading-${r.id}" role="status">Loading photo...</span>
+              <img data-report-image-id="${r.id}" alt="Uploaded road damage photo"
+                   style="width: 52px; height: 52px; object-fit: cover; border-radius: var(--radius-sm); cursor: pointer; border: 1px solid var(--border-color);"
+                   hidden>
+              <button type="button" class="btn btn-secondary btn-sm" data-view-villager-image="${r.id}" disabled>View Image</button>
+            </td>
+            <td>
+              <strong>${escapeHtml(r.roadName)}</strong>
+              <div style="font-size: 0.8rem; color: var(--text-muted);">${escapeHtml(r.villageArea)}</div>
+            </td>
+            <td>
+              <a href="https://maps.google.com/?q=${r.latitude},${r.longitude}" target="_blank" style="font-size: 0.82rem; font-family: monospace;">
+                📍 ${r.latitude.toFixed(4)}, ${r.longitude.toFixed(4)}
+              </a>
+            </td>
+            <td>
+              ${aiBadge}
+            </td>
+            <td>
+              ${empStatusBadge}
+            </td>
+            <td>
+              ${r.status === 'EMPLOYEE_APPROVED' || r.status === 'ACCEPTED' ? '<span class="badge badge-points">+20 Points</span>' : '<span style="color: var(--text-muted); font-size: 0.85rem;">0 Points</span>'}
+            </td>
+            <td>${repairBadge}</td>
+            <td style="font-size: 0.82rem; color: var(--text-muted);">${formatDate(r.createdAt)}</td>
+          </tr>
+        `;
+      }).join('');
+      loadVillagerReportImages(reports);
+    }
+
+    async function loadVillagerReportImages(reports) {
+      await Promise.all(reports.map(async report => {
+        const image = document.querySelector(`[data-report-image-id="${report.id}"]`);
+        const loading = document.getElementById(`villager-image-loading-${report.id}`);
+        const button = document.querySelector(`[data-view-villager-image="${report.id}"]`);
+        try {
+          const imageUrl = await API.getReportImage(report.id);
+          reportImageUrls.set(String(report.id), imageUrl);
+          image.src = imageUrl;
+          image.onerror = () => {
+            image.hidden = true;
+            button.disabled = true;
+            loading.hidden = false;
+            loading.textContent = 'Photo could not be displayed.';
+            loading.style.color = '#b91c1c';
+            URL.revokeObjectURL(imageUrl);
+            reportImageUrls.delete(String(report.id));
+          };
+          image.hidden = false;
+          loading.hidden = true;
+          button.disabled = false;
+        } catch (error) {
+          loading.textContent = error.message || 'Photo could not be loaded.';
+          loading.style.color = '#b91c1c';
+        }
+      }));
+    }
+
+    document.getElementById('reports-table-body').addEventListener('click', event => {
+      const button = event.target.closest('button[data-view-villager-image]');
+      if (!button) return;
+      const report = villagerReportsById.get(button.dataset.viewVillagerImage);
+      const imageUrl = reportImageUrls.get(button.dataset.viewVillagerImage);
+      if (report && imageUrl) {
+        openPhotoModal(imageUrl, report.reportNumber, report.aiExplanation || '', report.aiConfidenceScore);
+      }
+    });
+
+    function openPhotoModal(url, reportNo, explanation, confidence) {
+      document.getElementById('modal-img-preview').src = url;
+      document.getElementById('photo-modal-title').textContent = `Report ${reportNo} Photograph`;
+      document.getElementById('photo-ai-desc').innerHTML = `
+        <strong>AI Analysis Details:</strong>
+        <p style="margin-top: 0.35rem;">${explanation || 'Image processed by AI vision model.'}</p>
+        ${confidence ? `<div style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">Model Confidence Score: ${(confidence * 100).toFixed(1)}%</div>` : ''}
+      `;
+      document.getElementById('photo-modal').classList.add('active');
+    }
+
+    function closePhotoModal() {
+      document.getElementById('photo-modal').classList.remove('active');
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    loadDashboard();
+  </script>
+</body>
+</html>

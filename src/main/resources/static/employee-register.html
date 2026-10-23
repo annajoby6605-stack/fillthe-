@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panchayat Employee Access Request – Fill the Pockets</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body style="background: var(--bg-cream);">
+
+  <!-- Navigation Bar -->
+  <nav class="navbar" style="border-bottom: 2px solid var(--accent-gold);">
+    <div class="nav-container">
+      <a href="/index.html" class="brand">
+        <div class="brand-icon">🏛️</div>
+        <div>
+          <div>Gram Panchayat Portal</div>
+          <span class="brand-subtitle">Public Works Administration</span>
+        </div>
+      </a>
+      <div class="nav-actions">
+        <a href="/portal-select.html" class="btn btn-secondary btn-sm">All Portals</a>
+        <a href="/employee-login.html" class="btn btn-gold btn-sm">Employee Login</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Access Request Form Wrapper -->
+  <main class="auth-wrapper">
+    <div class="auth-card" style="max-width: 540px;">
+      <div class="auth-header">
+        <div class="auth-icon-badge" style="background: rgba(197, 155, 39, 0.15); color: var(--accent-gold);">🏛️</div>
+        <h1 class="auth-title">Employee Access Request</h1>
+        <p class="auth-subtitle">Official registration portal for Gram Panchayat field officers and administrative personnel</p>
+      </div>
+
+      <!-- Institutional Security Notice -->
+      <div style="background: #fffbeb; border: 1.5px solid #fde68a; border-radius: var(--radius-md); padding: 0.85rem 1rem; margin-bottom: 1.25rem; font-size: 0.82rem; color: #92400e; line-height: 1.5;">
+        🔒 <strong>Administrative Security Policy:</strong> Public users cannot self-assign approved employee privileges. Submitting this form creates an account in <strong>PENDING</strong> verification status. Login access requires explicit review and approval by the Panchayat Administrator.
+      </div>
+
+      <div id="error-message" style="display: none; background: #fee2e2; color: #b91c1c; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.88rem; margin-bottom: 1.25rem;"></div>
+      <div id="success-message" style="display: none; background: #d8f3dc; color: #1b4332; padding: 0.85rem 1rem; border-radius: var(--radius-md); font-size: 0.88rem; margin-bottom: 1.25rem; line-height: 1.5;"></div>
+
+      <form id="employee-register-form">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label" for="fullName">Full Name</label>
+            <input type="text" id="fullName" class="form-input" placeholder="e.g. Suresh Varma" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="employeeCode">Employee ID / Code</label>
+            <input type="text" id="employeeCode" class="form-input" placeholder="e.g. EMP101" required style="text-transform: uppercase;">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Official Email Address</label>
+          <input type="email" id="email" class="form-input" placeholder="e.g. suresh.varma@panchayat.gov.in" required autocomplete="email">
+          <div class="form-help">Must be your registered government or institutional email.</div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label" for="designation">Designation</label>
+            <input type="text" id="designation" class="form-input" placeholder="e.g. Assistant Engineer" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="panchayatName">Gram Panchayat</label>
+            <input type="text" id="panchayatName" class="form-input" value="Sundarapuram Gram Panchayat" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="phone">Official Contact Number (Optional)</label>
+          <input type="tel" id="phone" class="form-input" placeholder="+91 98765 00000">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label" for="password">Create Password</label>
+            <input type="password" id="password" class="form-input" placeholder="Minimum 6 chars" required minlength="6">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="confirmPassword">Confirm Password</label>
+            <input type="password" id="confirmPassword" class="form-input" placeholder="Re-enter password" required minlength="6">
+          </div>
+        </div>
+
+        <button type="submit" id="submit-btn" class="btn btn-gold btn-lg" style="width: 100%; margin-top: 0.5rem;">
+          Submit Employee Access Request
+        </button>
+      </form>
+
+      <div style="text-align: center; margin-top: 1.5rem; font-size: 0.88rem; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 1.25rem;">
+        Already an approved employee? 
+        <a href="/employee-login.html" style="font-weight: 700; color: var(--primary);">Go to Employee 2FA Login →</a>
+      </div>
+
+      <div style="text-align: center; margin-top: 0.75rem; font-size: 0.82rem; color: var(--text-muted);">
+        Are you a village resident? 
+        <a href="/villager-login.html" style="font-weight: 600; color: var(--primary-light);">Villager Citizen Portal</a>
+      </div>
+    </div>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script>
+    const form = document.getElementById('employee-register-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const errorBox = document.getElementById('error-message');
+    const successBox = document.getElementById('success-message');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorBox.style.display = 'none';
+      successBox.style.display = 'none';
+
+      const pwd = document.getElementById('password').value;
+      const confirmPwd = document.getElementById('confirmPassword').value;
+
+      if (pwd !== confirmPwd) {
+        errorBox.textContent = 'Passwords do not match. Please re-enter both fields.';
+        errorBox.style.display = 'block';
+        return;
+      }
+
+      if (pwd.length < 6) {
+        errorBox.textContent = 'Password must be at least 6 characters long.';
+        errorBox.style.display = 'block';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting Request...';
+
+      const data = {
+        fullName: document.getElementById('fullName').value.trim(),
+        employeeCode: document.getElementById('employeeCode').value.trim().toUpperCase(),
+        email: document.getElementById('email').value.trim(),
+        designation: document.getElementById('designation').value.trim(),
+        panchayatName: document.getElementById('panchayatName').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        password: pwd,
+        confirmPassword: confirmPwd
+      };
+
+      try {
+        const resp = await API.requestEmployeeAccess(data);
+        form.reset();
+        successBox.innerHTML = `
+          <strong>✓ Request Submitted Successfully</strong><br>
+          Your employee registration has been recorded in <strong>PENDING</strong> status.<br>
+          <span style="font-size: 0.8rem; margin-top: 0.35rem; display: block;">
+            An administrator must review your application before you can access the road works dashboard.
+          </span>
+        `;
+        successBox.style.display = 'block';
+        showToast('Employee request submitted (Pending Approval)', 'success');
+        setTimeout(() => {
+          window.location.href = '/employee-login.html';
+        }, 3000);
+      } catch (err) {
+        errorBox.textContent = err.message || 'Access request submission failed. Please try again.';
+        errorBox.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Employee Access Request';
+      }
+    });
+  </script>
+</body>
+</html>
